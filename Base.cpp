@@ -1,12 +1,14 @@
 #include <iostream> 
 using namespace std;
 
+
+//-----------------------Lista de personas---------------------
 class NodoDePersonas {
 public:
     string nombre;
     string apellido;
-    int edad;
     int cedula;
+    int edad;    
     NodoDePersonas* next;
     NodoDePersonas* previous;
 
@@ -142,6 +144,134 @@ public:
 };
 
 
+
+
+
+//-------------------Lista De Tareas----------------------
+
+class NodoTipoDeTarea{
+public:
+    int idTipoTarea;
+    string NombreDelTipoDeTarea;
+    string TipoDeObligacion;
+    NodoTipoDeTarea* next;
+
+    NodoTipoDeTarea(int idTipoTarea, string NombreDelTipoDeTarea, string TipoDeObligacion){
+        this->idTipoTarea = idTipoTarea;
+        this->NombreDelTipoDeTarea = NombreDelTipoDeTarea;
+        this->TipoDeObligacion = TipoDeObligacion;
+        this->next = next;
+    }
+
+};
+
+class ListaDeTareas{
+private:
+     NodoTipoDeTarea* head;
+     NodoTipoDeTarea* tail;
+
+
+public:
+    ListaDeTareas(){
+        this->head = nullptr;
+        this->tail = nullptr;
+    }
+
+    void InsertarPorIdOrdenado(int id, string NombreDelTipoDeTarea, string TipoDeObligacion) {
+        NodoTipoDeTarea* nuevoNodo = new NodoTipoDeTarea(id, NombreDelTipoDeTarea, TipoDeObligacion);
+
+        // Caso 1: La lista está vacía
+        if (head == nullptr) {
+            head = nuevoNodo;
+            tail = nuevoNodo;
+            tail->next = head; // Mantener la circularidad
+            return;
+        }
+
+        // Caso 2: Insertar antes del head
+        if (id < head->idTipoTarea) {
+            nuevoNodo->next = head;
+            head = nuevoNodo;
+            tail->next = head; // Mantener la circularidad
+            return;
+        }
+
+        // Caso 3: Insertar después del tail
+        if (id > tail->idTipoTarea) {
+            tail->next = nuevoNodo;
+            tail = nuevoNodo;
+            tail->next = head; // Mantener la circularidad
+            return;
+        }
+
+        // Caso 4: Insertar en el medio
+        NodoTipoDeTarea* temp = head;
+        while (temp->next != head && temp->next->idTipoTarea < id) {
+            temp = temp->next;
+        }
+
+        nuevoNodo->next = temp->next;
+        temp->next = nuevoNodo;
+    }
+
+
+};
+
+
+
+
+
+
+
+//-------------------Sub Lista de Tareas-------------------
+class subListaDeTareas{
+public:
+
+    int id;
+    string Descripcion;
+    string NivelDeImportancia;
+    int mes;
+    int dia;
+    int anio;
+    int hora;
+
+    subListaDeTareas* next;
+    NodoSubListaDeTarea* Tipo;
+
+
+    subListaDeTareas(int id, string Descripcion, string NivelDeImportancia, int mes, int dia, int anio, int hora, NodoSubListaDeTarea* Tipo){
+        this->id = id;
+        this->Descripcion = Descripcion;
+        this->NivelDeImportancia = NivelDeImportancia;
+        this->mes = mes;
+        this->dia = dia;
+        this->anio = anio;
+        this->hora = hora;
+        this->Tipo = Tipo;
+    }
+};
+
+
+
+class NodoSubListaDeTarea{
+public:
+
+    string nombre;
+    string comentarios;
+    int PorcentajeDeAvanze;
+    bool Estado;
+
+    NodoSubListaDeTarea(string nombre, string comentarios, int PorcentajeDeAvanze, bool Estado){
+        this->nombre = nombre;
+        this->comentarios = comentarios;
+        this->PorcentajeDeAvanze = PorcentajeDeAvanze;
+        this->Estado = Estado;
+    }
+};
+
+
+
+
 int main(){
     ListaDePersonas Hola;
     Hola.InsertarPersonaPorCedulaOrdenada("Juan","Perez",20,1);
@@ -154,95 +284,3 @@ int main(){
     Hola.MostrarPersona();
     return 0;
 }
-
-
-// class TiposDeTarea{
-// public:
-//     //Se definen la head, la tail y el next, esto para facilitar las operaciones
-//     //de insercion, borrar, ya que no se necesita iterar tanto
-//     TiposDeTarea* head;
-//     TiposDeTarea* tail;
-//     TiposDeTarea* next;
-
-//     int id;
-//     string TipoTarea;
-//     string Descripcion;
-
-//     //Constructor de la clase 
-//     /*
-//     args
-//         int: id
-//         string TipoTarea
-//         string Descripcion
-//     */
-//     TiposDeTarea(int id, string TipoTarea, string Descripcion){
-//         this->id = id;
-//         this->TipoTarea = TipoTarea;
-//         this->Descripcion = Descripcion;
-//         this->head = nullptr;
-//         this->tail = nullptr;
-//         this->next = nullptr;
-//     }
-// };
-
-
-
-// class TareasSimples{
-// public:
-//     TareasSimples* head;
-//     TareasSimples* tail;
-//     TareasSimples* next;
-
-//     int id;
-//     string Descripcion;
-//     string NivelDeImportancia;
-//     int mes;
-//     int dia;
-//     int anio;
-//     int hora;
-//     SubListaDeTareas* Tipo;
-
-//     TareasSimples(int id, string Descripcion, string NivelDeImportancia, int mes, int dia, int anio, int hora, SubListaDeTareas* Tipo){
-//         this->id = id;
-//         this->Descripcion = Descripcion;
-//         this->NivelDeImportancia = NivelDeImportancia;
-//         this->mes = mes;
-//         this->dia = dia;
-//         this->anio = anio;
-//         this->hora = hora;
-//         this->Tipo = Tipo;
-//     }
-// };
-
-
-
-// class SubListaDeTareas{
-// public:
-//     SubListaDeTareas* head;
-//     SubListaDeTareas* tail;
-//     SubListaDeTareas* next;
-
-//     string nombre;
-//     string comentarios;
-//     int PorcentajeDeAvanze;
-//     bool Estado;
-
-//     SubListaDeTareas(string nombre, string comentarios, int PorcentajeDeAvanze, bool Estado){
-//         this->nombre = nombre;
-//         this->comentarios = comentarios;
-//         this->PorcentajeDeAvanze = PorcentajeDeAvanze;
-//         this->Estado = Estado;
-//     }
-// };
-
-
-// class TipoDeTarea{
-// public:
-//     TipoDeTarea* head;
-//     TipoDeTarea* tail;
-//     TipoDeTarea* next;
-
-//     string TipoDeTarea;
-//     string TipoDeObligacion;
-
-// };
