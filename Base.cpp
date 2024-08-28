@@ -25,24 +25,59 @@ public:
     NodoDePersonas* head;
     NodoDePersonas* tail;
 
-    void InsertarPersonaAlFinal(string nombre, string apellido, int edad, int cedula){
-        NodoDePersonas* nuevoNodo = new NodoDePersonas(nombre,apellido,edad,cedula);
+    void InsertarPersonaPorCedulaOrdenada(string nombre, string apellido, int edad, int cedula) {
+        NodoDePersonas* nuevoNodo = new NodoDePersonas(nombre, apellido, edad, cedula);
 
-        //Verficamos si la lista esta vacia
-        if(head == nullptr){
+        // Verificamos si la lista está vacía
+        if (head == nullptr) {
             head = nuevoNodo;
-            head->previous = nullptr;
             tail = nuevoNodo;
-            tail->previous = nullptr;
-
-        } else{
-            tail->next = nuevoNodo;//Apuntamos la cola al siguiente nodo
-            nuevoNodo->previous = tail; //Hacemos que el nuevo nodo apunte al ultimo
-                                        //Para mantener en enlace
-            tail = nuevoNodo; //Definimos la cola como el nuevo nodo
-            tail->next = nullptr;//Aseguramos que la nueva cola no apunte a nada
+            return;
         }
+
+        // Verificar duplicados
+        NodoDePersonas* temp = head;
+        while (temp != nullptr) {
+            if (temp->cedula == cedula) {
+                cout << "Error: Cedula duplicada no permitida." << endl;
+                delete nuevoNodo; // Liberamos la memoria del nodo que no se insertará
+                return;
+            }
+            temp = temp->next;
+        }
+
+        // Si la cedula del nuevo nodo es menor que la del head, insertar al inicio
+        if (cedula < head->cedula) {
+            nuevoNodo->next = head;
+            head->previous = nuevoNodo;
+            head = nuevoNodo;
+            return;
+        }
+
+        // Si la cedula del nuevo nodo es mayor que la del tail, insertar al final
+        if (cedula > tail->cedula) {
+            nuevoNodo->previous = tail;
+            tail->next = nuevoNodo;
+            tail = nuevoNodo;
+            return;
+        }
+
+        // Insertar en la posición ordenada
+        temp = head;
+        while (temp != nullptr && temp->cedula < cedula) {
+            temp = temp->next;
+        }
+
+        // Insertar el nuevo nodo antes del nodo temp
+        nuevoNodo->next = temp;
+        nuevoNodo->previous = temp->previous;
+        if (temp->previous != nullptr) {
+            temp->previous->next = nuevoNodo;
+        }
+        temp->previous = nuevoNodo;
+        return;
     }
+
 
     void BorrarPersona(string NombreDePersona, string ApellidoDePersona) {
         NodoDePersonas* temp = head;
@@ -109,9 +144,10 @@ public:
 
 int main(){
     ListaDePersonas Hola;
-    Hola.InsertarPersonaAlFinal("Juan","Perez",20,123456);
-    Hola.InsertarPersonaAlFinal("Pedro","Perez",20,123456);
-    Hola.InsertarPersonaAlFinal("Maria","Perez",20,123456);
+    Hola.InsertarPersonaPorCedulaOrdenada("Juan","Perez",20,1);
+    Hola.InsertarPersonaPorCedulaOrdenada("Pedro","Perez",20,12);
+    Hola.InsertarPersonaPorCedulaOrdenada("Maria","Perez",20,123);
+    Hola.InsertarPersonaPorCedulaOrdenada("Jony","Perez",20,0);
     Hola.MostrarPersona();
 
     Hola.BorrarPersona("Maria","Perez");
