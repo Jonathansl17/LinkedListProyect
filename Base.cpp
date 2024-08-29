@@ -2,20 +2,138 @@
 using namespace std;
 
 
+class NodoTipoDeTarea{
+public:
+    int IdDeTarea;
+    string nombreDeTipoDeTarea;
+    string descripcion;
+    NodoTipoDeTarea* next;
+
+    NodoTipoDeTarea(int IdDeTarea, string nombreDeTipoDeTarea, string descripcion){
+        this->IdDeTarea = IdDeTarea;
+        this->nombreDeTipoDeTarea = nombreDeTipoDeTarea;
+        this->descripcion = descripcion;
+        this->next = nullptr;
+    }
+};
+
+class ListaDeTiposDeTareas{
+public:
+    NodoTipoDeTarea* head;
+    NodoTipoDeTarea* tail;
+
+    ListaDeTiposDeTareas(){
+        this->head = nullptr;
+        this->tail = nullptr;
+    }
+
+    
+    void InsertarTipoDeTarea(int IdDeTarea, string nombreDeTipoDeTarea, string descripcion) {
+        NodoTipoDeTarea* nuevoNodo = new NodoTipoDeTarea(IdDeTarea, nombreDeTipoDeTarea, descripcion);
+
+        // Caso 1: La lista está vacía
+        if (head == nullptr) {
+            head = nuevoNodo;
+            tail = nuevoNodo;
+            tail->next = head; // Mantener la circularidad
+            return;
+        }
+
+        // Caso 2: Insertar antes del head
+        if (IdDeTarea < head->IdDeTarea) {
+            nuevoNodo->next = head;
+            head = nuevoNodo;
+            tail->next = head; // Mantener la circularidad
+            return;
+        }
+
+        // Caso 3: Insertar después del tail
+        if (IdDeTarea > tail->IdDeTarea) {
+            tail->next = nuevoNodo;
+            tail = nuevoNodo;
+            tail->next = head; // Mantener la circularidad
+            return;
+        }
+
+        // Caso 4: Insertar en el medio
+        NodoTipoDeTarea* temp = head;
+        while (temp->next != head && temp->next->IdDeTarea < IdDeTarea) {
+            temp = temp->next;
+        }
+
+        nuevoNodo->next = temp->next;
+        temp->next = nuevoNodo;
+        return;
+    }
+    
+};
+
+
+
+//-------------------Sub Lista de Tareas-------------------
+class NodoSubListaDeTarea{
+public:
+    NodoSubListaDeTarea* next;
+    string nombre;
+    string comentarios;
+    int PorcentajeDeAvanze;
+    bool Estado;
+
+    NodoSubListaDeTarea(string nombre, string comentarios, int PorcentajeDeAvanze){
+        this->nombre = nombre;
+        this->comentarios = comentarios;
+        this->PorcentajeDeAvanze = PorcentajeDeAvanze;
+        if(PorcentajeDeAvanze ==100){
+            this->Estado = true;
+        } else{
+            this->Estado = false;
+        }
+        this->next = nullptr;
+
+    }
+};
+class subListaDeTareas{
+public:
+    NodoSubListaDeTarea* head;
+    NodoSubListaDeTarea* tail;
+    
+    subListaDeTareas(){
+        this->head = nullptr;
+        this->tail = nullptr;
+    }
+
+    void InsertarSubTarea(string nombre, string comentarios, int avanze){
+        NodoSubListaDeTarea* nuevaSubtarea = new NodoSubListaDeTarea(nombre, comentarios, avanze);
+
+        if(head == nullptr){
+            head = nuevaSubtarea;
+            tail = nuevaSubtarea;
+            return;
+
+        } else{
+            tail->next = nuevaSubtarea;
+            tail = nuevaSubtarea;
+        }
+
+    }
+};
 //-------------------Lista De Tareas----------------------
 
-class NodoDeTareasActivas{
+// Asegúrate de que la clase NodoDeTareasActivas tenga un puntero a subListaDeTareas
+class NodoDeTareasActivas {
 public:
     int idTipoTarea;
     string Descripcion;
     string NivelDeImportancia;
-    int dia;
     int mes;
+    int dia;
     int anio;
     int hora;
     NodoDeTareasActivas* next;
+    subListaDeTareas* subLista; 
+    ListaDeTiposDeTareas* tiposDeTareas;
 
-    NodoDeTareasActivas(int idTipoTarea, string Descripcion, string NivelDeImportancia, int mes, int dia, int anio, int hora){
+    NodoDeTareasActivas(int idTipoTarea, string Descripcion, string NivelDeImportancia, int mes, int dia, int anio, int hora) {
         this->idTipoTarea = idTipoTarea;
         this->Descripcion = Descripcion;
         this->NivelDeImportancia = NivelDeImportancia;
@@ -24,8 +142,9 @@ public:
         this->anio = anio;
         this->hora = hora;
         this->next = nullptr;
+        this->subLista = new subListaDeTareas(); 
+        this->tiposDeTareas = new ListaDeTiposDeTareas();
     }
-
 };
 
 class ListaDeTareasActivas{
@@ -37,7 +156,16 @@ public:
         this->tail = nullptr;
     }
 
-    void InsertarPorIdOrdenado(int id, string Descripcion, string NivelDeImportancia, int mes, int dia, int anio, int hora){
+    // Función auxiliar para comparar fechas y horas
+    bool esFechaYHoraMayor(int anio1, int mes1, int dia1, int hora1, int anio2, int mes2, int dia2, int hora2) {
+        if (anio1 > anio2) return true;
+        if (anio1 == anio2 && mes1 > mes2) return true;
+        if (anio1 == anio2 && mes1 == mes2 && dia1 > dia2) return true;
+        if (anio1 == anio2 && mes1 == mes2 && dia1 == dia2 && hora1 > hora2) return true;
+        return false;
+    }
+
+    void InsertarTareaActivaAPersona(int id, std::string Descripcion, std::string NivelDeImportancia, int mes, int dia, int anio, int hora) {
         NodoDeTareasActivas* nuevoNodo = new NodoDeTareasActivas(id, Descripcion, NivelDeImportancia, mes, dia, anio, hora);
 
         // Caso 1: La lista está vacía
@@ -48,16 +176,16 @@ public:
             return;
         }
 
-        // Caso 2: Insertar antes del head
-        if (id < head->idTipoTarea) {
+        // Caso 2: Insertar antes del head 
+        if (esFechaYHoraMayor(anio, mes, dia, hora, head->anio, head->mes, head->dia, head->hora)) {
             nuevoNodo->next = head;
             head = nuevoNodo;
             tail->next = head; // Mantener la circularidad
             return;
         }
 
-        // Caso 3: Insertar después del tail
-        if (id > tail->idTipoTarea) {
+        // Caso 3: Insertar despues del tail 
+        if (!esFechaYHoraMayor(anio, mes, dia, hora, tail->anio, tail->mes, tail->dia, tail->hora)) {
             tail->next = nuevoNodo;
             tail = nuevoNodo;
             tail->next = head; // Mantener la circularidad
@@ -66,18 +194,15 @@ public:
 
         // Caso 4: Insertar en el medio
         NodoDeTareasActivas* temp = head;
-        while (temp->next != head && temp->next->idTipoTarea < id) {
+        while (temp->next != head && esFechaYHoraMayor(anio, mes, dia, hora, temp->next->anio, temp->next->mes, temp->next->dia, temp->next->hora)) {
             temp = temp->next;
         }
 
         nuevoNodo->next = temp->next;
         temp->next = nuevoNodo;
+        return;
     }
-
-    void BorrarTareasActivas(){
-
-    }
-
+   
 
 };
 
@@ -101,7 +226,7 @@ public:
         this->cedula = cedula;
         this->next = nullptr;
         this->previous = nullptr;
-        this->TareasDeLaPersona = new ListaDeTareasActivas(); // Inicializar la lista de tareas
+        this->TareasDeLaPersona = new ListaDeTareasActivas(); 
     }
 };
 
@@ -116,7 +241,7 @@ public:
         tail = nullptr;
     }
 
-    void InsertarPersonaPorCedulaOrdenada(string nombre, string apellido, int edad, int cedula) {
+    void InsertarPersona(string nombre, string apellido, int edad, int cedula) {
         NodoDePersonas* nuevoNodo = new NodoDePersonas(nombre, apellido, edad, cedula);
 
         // Verificamos si la lista está vacía
@@ -243,17 +368,17 @@ public:
     }
 
 
-    void InsertarTareaAPersona(int cedula, int idTipoTarea, string Descripcion, string NivelDeImportancia, int mes, int dia, int anio, int hora) {
+    void InsertarTareaActiva(int cedula, int idTipoTarea, string Descripcion, string NivelDeImportancia, int mes, int dia, int anio, int hora) {
         NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
         if (persona != nullptr) {
-            persona->TareasDeLaPersona->InsertarPorIdOrdenado(idTipoTarea, Descripcion, NivelDeImportancia, mes, dia, anio, hora);
+            persona->TareasDeLaPersona->InsertarTareaActivaAPersona(idTipoTarea, Descripcion, NivelDeImportancia, mes, dia, anio, hora);
         } else {
             cout << "Persona no encontrada." << endl;
         }
     }
 
 
-    void MostrarTareasDePersona(int cedula) {
+    void MostrarTareasActivasDePersona(int cedula) {
         NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
         if (persona != nullptr) {
             NodoDeTareasActivas* tarea = persona->TareasDeLaPersona->head;
@@ -349,6 +474,144 @@ public:
         }
     }
 
+
+    // Función para insertar una subtarea
+    void InsertarSubTareaEnTareaActiva(int cedula, int idTipoTarea, string nombre, string comentarios, int avanze) {
+
+        NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
+        if(persona != nullptr){
+
+            NodoDeTareasActivas* tarea = persona->TareasDeLaPersona->head;
+            while (tarea != nullptr) {
+                if (tarea->idTipoTarea == idTipoTarea) {
+                    tarea->subLista->InsertarSubTarea(nombre, comentarios, avanze);
+                    return;
+                }
+                tarea = tarea->next;
+            }
+            cout << "Tarea no encontrada." << endl;
+            return;
+
+        } else{
+            cout <<"Persona no encontrada";
+            return;
+        }
+    }
+
+    void MostrarSubTareaDePersona(int cedula, int idTipoTarea) {
+
+        NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
+        if(persona != nullptr){
+
+            NodoDeTareasActivas* tarea = persona->TareasDeLaPersona->head;
+            while (tarea != nullptr) {
+                if (tarea->idTipoTarea == idTipoTarea) {
+                    NodoSubListaDeTarea* subTarea = tarea->subLista->head;
+                    while (subTarea != nullptr) {
+                        cout << subTarea->nombre << " " << subTarea->comentarios << " " << subTarea->PorcentajeDeAvanze <<" "<< endl;
+                        if(subTarea->Estado){
+                            cout << "Subtarea completada" << endl;
+                        } else{
+                            cout << "Subtarea no completada" << endl;
+                        }
+                        subTarea = subTarea->next;
+                    }
+                    
+                    return;
+                }
+                tarea = tarea->next;
+            }
+            cout << "Tarea no encontrada." << endl;
+            return;
+
+        } else{
+            cout <<"Persona no encontrada";
+            return;
+        }
+    }
+
+    void ModificarSubTareaDePersona(int cedula, int idTipoTarea,string nombreDeSubtarea, int nuevoAvanze) {
+
+        NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
+        if(persona != nullptr){
+
+            NodoDeTareasActivas* tarea = persona->TareasDeLaPersona->head;
+            while (tarea != nullptr) {
+                if (tarea->idTipoTarea == idTipoTarea) {
+                    NodoSubListaDeTarea* subTarea = tarea->subLista->head;
+                    while (subTarea != nullptr){
+                        if(subTarea->nombre == nombreDeSubtarea){
+                            subTarea->PorcentajeDeAvanze = nuevoAvanze;
+                            if(nuevoAvanze == 100){
+                                subTarea->Estado = true;
+                            } else{
+                                subTarea->Estado = false;
+                            }
+                            return;
+                        }
+                        subTarea = subTarea->next;
+                    }
+                    return;
+                }
+                tarea = tarea->next;
+            }
+            cout << "Tarea no encontrada." << endl;
+            return;
+
+        } else{
+            cout <<"Persona no encontrada";
+            return;
+        }
+    }
+
+    void InsertarTipoDeTareaATareActivas(int cedula, int id, string nombreDeTipoDeTarea, string descripcion){
+        NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
+        if(persona != nullptr){
+            
+            NodoDeTareasActivas* tareas = persona->TareasDeLaPersona->head;
+
+            while (tareas != nullptr){
+                if(tareas->idTipoTarea == id){
+                    tareas->tiposDeTareas->InsertarTipoDeTarea(id,nombreDeTipoDeTarea,descripcion);
+                    return;
+                }
+                tareas = tareas->next;
+            }
+            cout << "Tarea no encontrada." << endl;
+            return;
+
+        } else{
+            cout << "Persona no encontrada." << endl;
+            return;
+        }
+    }
+    
+
+    void MostrarTipoDeTareasDeTareasActivas(int cedula) {
+        NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
+
+        if (persona != nullptr) {
+            NodoDeTareasActivas* tareas = persona->TareasDeLaPersona->head;
+            if (tareas != nullptr) {
+                NodoDeTareasActivas* inicioTareas = tareas; 
+                do {
+                    cout << "Tarea: " << tareas->idTipoTarea << endl;
+                    NodoTipoDeTarea* Tipos = tareas->tiposDeTareas->head;
+                    if (Tipos != nullptr) {
+                        NodoTipoDeTarea* inicioTipos = Tipos; 
+                        do {
+                            cout << Tipos->IdDeTarea << " " << Tipos->nombreDeTipoDeTarea << " " << Tipos->descripcion << endl;
+                            Tipos = Tipos->next;
+                        } while (Tipos != inicioTipos);
+                    }
+                    tareas = tareas->next;
+                } while (tareas != inicioTareas);
+            }
+        } else {
+            cout << "Persona no encontrada." << endl;
+            return;
+        }
+    }
 };
 
 
@@ -358,66 +621,45 @@ public:
 
 int main(){
     ListaDePersonas Hola;
-    Hola.InsertarPersonaPorCedulaOrdenada("Juan","Perez",20,123456);
-    Hola.InsertarPersonaPorCedulaOrdenada("Pedro","Perez",20,12);
-    Hola.InsertarPersonaPorCedulaOrdenada("Maria","Perez",20,123);
-    Hola.InsertarPersonaPorCedulaOrdenada("Jony","Perez",20,0);
+    Hola.InsertarPersona("Juan","Perez",20,123456);
+    Hola.InsertarPersona("Pedro","Perez",20,12);
+    Hola.InsertarPersona("Maria","Perez",20,123);
+    Hola.InsertarPersona("Jony","Perez",20,0);
     Hola.MostrarPersona();
 
     Hola.BorrarPersona("Maria","Perez");
     Hola.MostrarPersona();
+    cout<<endl;
     
     
-    Hola.InsertarTareaAPersona(123456,1,"Hacer tarea","Alta",12,12,2021,12);
-    Hola.InsertarTareaAPersona(123456,2,"Hacer tarea 2","Alta",12,12,2021,12);
-    Hola.MostrarTareasDePersona(123456);
+    Hola.InsertarTareaActiva(123456,1,"Hacer tarea","Alta",12,12,2021,18);
+    Hola.InsertarTareaActiva(123456,2,"Hacer tarea 2","Alta",12,12,2021,17);
+    Hola.InsertarTareaActiva(123456,3,"Hacer tarea 3","Alta",12,12,2021,33);
+    Hola.MostrarTareasActivasDePersona(123456);
     cout<<endl;
     Hola.BorrarTareas(123456,2);
-    Hola.MostrarTareasDePersona(123456);
+    Hola.MostrarTareasActivasDePersona(123456);
+
+    cout<<endl;
     Hola.ModificarTareas(123456,1,32,312,312,31);
-    Hola.MostrarTareasDePersona(123456);
-    
+    Hola.MostrarTareasActivasDePersona(123456);
+    Hola.InsertarSubTareaEnTareaActiva(123456,1,"Subtarea","Prueba",30);
+    Hola.MostrarSubTareaDePersona(123456,1);
+    Hola.ModificarSubTareaDePersona(123456,1,"Subtarea",100);
+    Hola.MostrarSubTareaDePersona(123456,1);
+    Hola.InsertarSubTareaEnTareaActiva(123456,1,"Subtarea2","Prueba",30);
+    Hola.MostrarSubTareaDePersona(123456,1);
+    cout<<endl;
+
+    Hola.InsertarTipoDeTareaATareActivas(123456,1,"Tipo","JAJAJA");
+    Hola.InsertarTipoDeTareaATareActivas(123456,1,"Tipo2","JAJAJA");
+    Hola.MostrarTipoDeTareasDeTareasActivas(123456);
     return 0;
 }
 
 
 
 
-//-------------------Sub Lista de Tareas-------------------
-class NodoSubListaDeTarea{
-public:
-
-    string nombre;
-    string comentarios;
-    int PorcentajeDeAvanze;
-    bool Estado;
-
-    NodoSubListaDeTarea(string nombre, string comentarios, int PorcentajeDeAvanze, bool Estado){
-        this->nombre = nombre;
-        this->comentarios = comentarios;
-        this->PorcentajeDeAvanze = PorcentajeDeAvanze;
-        this->Estado = Estado;
-    }
-};
-class subListaDeTareas{
-public:
-
-    int id;
-    string Descripcion;
-    string NivelDeImportancia;
-    int mes;
-    int dia;
-    int anio;
-    int hora;
-
-    subListaDeTareas* next;
-    NodoSubListaDeTarea* Tipo;
-
-
-    subListaDeTareas(){
-
-    }
-};
 
 
 
