@@ -786,29 +786,64 @@ public:
 
 
 
-ListaDePersonas Hola;
-void cargarDatos(){
-    Hola.InsertarPersona("Juan","Perez",20,1);
-    Hola.InsertarPersona("Pedro","Gomez",21,2);
-    Hola.InsertarPersona("Maria","Rodriguez",18,3);
-    Hola.InsertarPersona("Jonny","Gonzales",19,4);
-    Hola.InsertarPersona("Federico","Murillo",23,5);
-    
-}
 
 
-void Menu(){
-    cout<<"------------Bienvenido al Gestor de Tareas------------";
-    cout<<
-}
+
+
+
 
 
 
 int main(){
-    cargarDatos();
-    Menu();
+    ListaDePersonas Hola;
+    Hola.InsertarPersona("Juan","Perez",20,123456);
+    Hola.InsertarPersona("Pedro","Perez",20,12);
+    Hola.InsertarPersona("Maria","Perez",20,123);
+    Hola.InsertarPersona("Jony","Perez",20,0);
+    Hola.MostrarPersona();
+
+    Hola.BorrarPersona("Maria","Perez");
+    Hola.MostrarPersona();
+    cout<<endl;
+    
+    
+    Hola.InsertarTareaActiva(123456,1,"Hacer tarea","Alta",12,12,2021,18);
+    Hola.InsertarTareaActiva(123456,2,"Hacer tarea 2","Alta",12,12,2021,17);
+    Hola.InsertarTareaActiva(123456,3,"Hacer tarea 3","Alta",12,12,2021,33);
+    Hola.MostrarTareasActivasDePersona(123456);
+    cout<<endl;
+    Hola.BorrarTareas(123456,2);
+    Hola.MostrarTareasActivasDePersona(123456);
+    // Hola.MostrarTareasCompletadasDeLaPersona(123456);
+
+    cout<<endl;
+    Hola.ModificarTareas(123456,1,32,312,312,31);
+    Hola.MostrarTareasActivasDePersona(123456);
+    Hola.InsertarSubTareaEnTareaActiva(123456,1,"Subtarea","Prueba",30);
+    Hola.MostrarSubTareaDePersona(123456,1);
+    Hola.ModificarSubTareaDePersona(123456,1,"Subtarea",100);
+    Hola.MostrarSubTareaDePersona(123456,1);
+    Hola.InsertarSubTareaEnTareaActiva(123456,1,"Subtarea2","Prueba",30);
+    Hola.MostrarSubTareaDePersona(123456,1);
+    cout<<endl;
+
+    cout<<"JAJAJA"<<endl;
 
 
+     cout<<endl;
+    Hola.InsertarTipoDeTareaATareActivas(123456,1,"estudio","cosas de la U");
+    Hola.InsertarTipoDeTareaATareActivas(123456,2,"hogar","casa");
+    Hola.MostrarTipoDeTareasDeTareasActivas(123456);
+
+
+
+    cout<<"Mostrando tareas completadas"<<endl;
+    Hola.InsertarSubTareaEnTareaActiva(123456,1,"Subtarea2","Prueba",30);
+    Hola.InsertarSubTareaEnTareaActiva(123456,1,"Subtarea3","Prueba",30);
+    Hola.InsertarSubTareaEnTareaActiva(123456,1,"Subtarea4","Prueba",100);
+    Hola.ModificarSubTareaDePersona(123456,1,"Subtarea2",100);
+    Hola.ModificarSubTareaDePersona(123456,1,"Subtarea3",100);
+    Hola.MostrarTareasCompletadasDeLaPersona(123456);
     return 0;
 }
 
