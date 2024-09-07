@@ -1,6 +1,4 @@
 #include <iostream> 
-#include <thread>
-#include <chrono>
 using namespace std;
 
 
@@ -28,20 +26,13 @@ en una lista simple con insercion al final
 */
 class NodoDeTareasCompletadas {
 public:
+    NodoSubListaDeTarea* tareaActiva;  // Puntero al nodo de tareas activas
     NodoDeTareasCompletadas* next;
-    NodoTipoDeTarea* TipoDeTarea;
-    int id;
-    string descripcion;
-    int PorcentajeDeCumplimiento;
 
-    NodoDeTareasCompletadas(int id, string descripcion, int PorcentajeDeCumplimiento) {
-        this->TipoDeTarea = TipoDeTarea;
-        this->id = id;
-        this->descripcion = descripcion;
-        this->PorcentajeDeCumplimiento = PorcentajeDeCumplimiento;
+    NodoDeTareasCompletadas(NodoSubListaDeTarea* tareaActiva) {
+        this->tareaActiva = tareaActiva;
         this->next = nullptr;
     }
-
 };
 
 
@@ -55,20 +46,15 @@ public:
         tail = nullptr;
     }
 
-    void agregarTareaCompletada(int id, string descripcion, int PorcentajeDeCumplimiento) {
-        NodoDeTareasCompletadas* nuevoNodo = new NodoDeTareasCompletadas(id, descripcion, PorcentajeDeCumplimiento);
-
-        // Caso 1: La lista está vacía
-        if (head == nullptr) {
-            head = nuevoNodo;
-            tail = nuevoNodo;
-            return;
-        } else{
+    void agregarTareaCompletada(NodoSubListaDeTarea* tareaActiva) {
+        NodoDeTareasCompletadas* nuevoNodo = new NodoDeTareasCompletadas(tareaActiva);
+        if (tail == nullptr) {
+            head = tail = nuevoNodo;
+        } else {
             tail->next = nuevoNodo;
             tail = nuevoNodo;
         }
-
-    } 
+    }
 
 
 };
@@ -113,7 +99,7 @@ public:
         if(avanze == 100){
             nuevaSubtarea->Estado = true;
             ListaDeTareasCompletadas TareasListas;
-            TareasListas.agregarTareaCompletada(1, nombre, avanze);
+            TareasListas.agregarTareaCompletada(nuevaSubtarea);
         } else{
             nuevaSubtarea->Estado = false;
         }
@@ -529,11 +515,20 @@ public:
         NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
         if (persona != nullptr) {
             NodoDeTareasCompletadas* tarea = persona->TareasCompletadas->head;
-            while (tarea != nullptr){
-                cout << tarea->id << " " << tarea->descripcion << " " << tarea->PorcentajeDeCumplimiento << endl;
-                tarea = tarea->next;
+            if (tarea != nullptr) {
+                do {
+                    if (tarea->tareaActiva != nullptr) { // Verificar que tareaActiva no sea nulo
+                        cout << tarea->tareaActiva->nombre << " " << tarea->tareaActiva->comentarios << " " << tarea->tareaActiva->PorcentajeDeAvanze << endl;
+                    } else {
+                        cout << "Tarea activa no encontrada." << endl;
+                    }
+                    tarea = tarea->next;
+                } while (tarea != nullptr);
+            } else {
+                cout << "No hay tareas completadas." << endl;
             }
-        
+        } else {
+            cout << "Persona no encontrada." << endl;
         }
     }
 
@@ -624,18 +619,11 @@ public:
     void InsertarSubTareaEnTareaActiva(int cedula, int idTipoTarea, string nombre, string comentarios, int avanze) {
 
         NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
-
         if(persona != nullptr){
 
             NodoDeTareasActivas* tarea = persona->TareasDeLaPersona->head;
             while (tarea != nullptr) {
-                if (tarea->idTipoTarea == idTipoTarea ) {
-
-                    if(avanze == 100){
-                        persona->TareasCompletadas->agregarTareaCompletada(1, nombre, avanze);
-                        return;
-                    }
-
+                if (tarea->idTipoTarea == idTipoTarea) {
                     tarea->subLista->InsertarSubTarea(nombre, comentarios, avanze);
                     return;
                 }
@@ -650,116 +638,39 @@ public:
         }
     }
 
-
     void BorrarSubTareaDeTareaActiva(int cedula, int idTipoTarea, string nombre) {
-        NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
-        if (persona != nullptr) {
-            NodoDeTareasActivas* tarea = persona->TareasDeLaPersona->head;
-            while (tarea != nullptr) {
-                if (tarea->idTipoTarea == idTipoTarea) {
-                    if (tarea->subLista == nullptr) {
-                        cout << "No hay sublistas asociadas a esta tarea." << endl;
-                        return;
-                    }
-                    
-                    NodoSubListaDeTarea* subTarea = tarea->subLista->head;
-                    NodoSubListaDeTarea* prevSubTarea = nullptr; // Para manejar el nodo anterior
-                    
-                    while (subTarea != nullptr) {
-                        if (subTarea->nombre == nombre) {
-                            // Si la subtarea a eliminar es la primera de la lista
-                            if (prevSubTarea == nullptr) {
-                                tarea->subLista->head = subTarea->next; // Cambiamos el head
-                            } else {
-                                prevSubTarea->next = subTarea->next; // Saltamos el nodo a eliminar
-                            }
-
-                            // Si es el último nodo, también actualizamos el tail
-                            if (subTarea->next == nullptr) {
-                                tarea->subLista->tail = prevSubTarea;
-                            }
-
-                            // Liberamos la memoria de la subtarea eliminada
-                            delete subTarea;
-                            cout << "Subtarea '" << nombre << "' eliminada correctamente." << endl;
-                            return;
-                        }
-                        
-                        // Avanzamos en la lista
-                        prevSubTarea = subTarea;
-                        subTarea = subTarea->next;
-                    }
-                    
-                    cout << "Subtarea no encontrada." << endl;
-                    return;
-                }
-                tarea = tarea->next;
-            }
-            cout << "Tarea no encontrada." << endl;
-        } else {
-            cout << "Persona no encontrada." << endl;
-        }
-    }
-
-
-
-
-
-
-    void ModificarSubTareaDePersona(int cedula, int idTipoTarea, string nombreDeSubtarea, int nuevoAvanze) {
         NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
         if(persona != nullptr){
             NodoDeTareasActivas* tarea = persona->TareasDeLaPersona->head;
             while (tarea != nullptr) {
                 if (tarea->idTipoTarea == idTipoTarea) {
-                    if(tarea->subLista == nullptr) {
-                        cout << "No hay sublistas asociadas a esta tarea." << endl;
-                        return;
-                    }
-                    NodoSubListaDeTarea* subTarea = tarea->subLista->head;
-                    while (subTarea != nullptr) {
-                        if(subTarea->nombre == nombreDeSubtarea){
-                            subTarea->PorcentajeDeAvanze = nuevoAvanze;
-
-                            if(nuevoAvanze == 100){
-                                subTarea->Estado = true;
-                                persona->TareasCompletadas->agregarTareaCompletada(1, nombreDeSubtarea, nuevoAvanze);
-                                BorrarSubTareaDeTareaActiva(cedula, idTipoTarea, nombreDeSubtarea);
-                                return;
-                            } else{
-                                subTarea->Estado = false;
-                            }
-                            return;
-                        }
-                        subTarea = subTarea->next;
-                    }
-                    cout << "Subtarea no encontrada." << endl;
+                    tarea->subLista->BorrarSubTarea(nombre);
                     return;
                 }
                 tarea = tarea->next;
             }
             cout << "Tarea no encontrada." << endl;
             return;
-        } else {
-            cout << "Persona no encontrada." << endl;
+
+        } else{
+            cout <<"Persona no encontrada";
             return;
         }
     }
+
 
 
     void MostrarSubTareaDePersona(int cedula, int idTipoTarea) {
+
         NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
         if(persona != nullptr){
+
             NodoDeTareasActivas* tarea = persona->TareasDeLaPersona->head;
             while (tarea != nullptr) {
                 if (tarea->idTipoTarea == idTipoTarea) {
-                    if(tarea->subLista == nullptr) {
-                        cout << "No hay sublistas asociadas a esta tarea." << endl;
-                        return;
-                    }
                     NodoSubListaDeTarea* subTarea = tarea->subLista->head;
                     while (subTarea != nullptr) {
-                        cout << subTarea->nombre << " " << subTarea->comentarios << " " << subTarea->PorcentajeDeAvanze << endl;
+                        cout << subTarea->nombre << " " << subTarea->comentarios << " " << subTarea->PorcentajeDeAvanze <<" "<< endl;
                         if(subTarea->Estado){
                             cout << "Subtarea completada" << endl;
                         } else{
@@ -767,21 +678,56 @@ public:
                         }
                         subTarea = subTarea->next;
                     }
+                    
                     return;
                 }
                 tarea = tarea->next;
             }
             cout << "Tarea no encontrada." << endl;
             return;
-        } else {
-            cout << "Persona no encontrada." << endl;
+
+        } else{
+            cout <<"Persona no encontrada";
             return;
         }
     }
 
+    void ModificarSubTareaDePersona(int cedula, int idTipoTarea,string nombreDeSubtarea, int nuevoAvanze) {
+        NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
+        if(persona != nullptr){
+            NodoDeTareasActivas* tarea = persona->TareasDeLaPersona->head;
+            while (tarea != nullptr) {
+                if (tarea->idTipoTarea == idTipoTarea) {
+                    NodoSubListaDeTarea* subTarea = tarea->subLista->head;
+                    while (subTarea != nullptr){
 
+                        if(subTarea->nombre == nombreDeSubtarea){
+                            subTarea->PorcentajeDeAvanze = nuevoAvanze;
 
+                            if(nuevoAvanze == 100){
+                                subTarea->Estado = true;
+                                persona->TareasCompletadas->agregarTareaCompletada(subTarea);
+                                // BorrarSubTareaDeTareaActiva(cedula, idTipoTarea, nombreDeSubtarea);
+                                
+                            } else{
+                                subTarea->Estado = false;
+                            }
+                            return;
+                        }
+                        subTarea = subTarea->next;
+                    }
+                    return;
+                }
+                tarea = tarea->next;
+            }
+            cout << "Tarea no encontrada." << endl;
+            return;
 
+        } else{
+            cout <<"Persona no encontrada";
+            return;
+        }
+    }
 
     void InsertarTipoDeTareaATareActivas(int cedula, int id, string nombreDeTipoDeTarea, string descripcion){
         NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
@@ -841,331 +787,71 @@ public:
 
 
 
-ListaDePersonas Hola;
-void cargarDatos(){
-    //Insertar personas
-    Hola.InsertarPersona("Juan","Perez",20,1);
-    Hola.InsertarPersona("Pedro","Gomez",21,2);
-    Hola.InsertarPersona("Maria","Rodriguez",18,3);
-    Hola.InsertarPersona("Jonny","Gonzales",19,4);
-    Hola.InsertarPersona("Federico","Murillo",23,5);
-    //Insertar tipo de tareas activas
-    Hola.InsertarTareaActiva(1,1,"Estudair","s",3,3,3,3);
-    Hola.InsertarTareaActiva(1,2,"Limpiar","s",3,3,3,3);
-    Hola.InsertarTipoDeTareaATareActivas(1,1,"Estudio","Trabajos del cole");
-    Hola.InsertarTipoDeTareaATareActivas(1,2,"Casa","Trabajos del cole");
 
-    
-}
-void MenuConsulta(){
-    system("cls");
-    cout<<"------------Menu de Consultas------------\n";
-    cout<<"\nQue deseas consultar:\n";
-    cout<<"1. Cual es la persona que tiene mas tareas activas\n";
-    cout<<"2. Cual es la persona que tiene mas tareas activas de un tipo X\n";
-    cout<<"3. Que tipo de tarea es el mas comun\n";
-    cout<<"4. Cual es la persona que tiene mas tareas vencidas de un tipo X dado una fecha Y\n";
-    cout<<"5. Cual es el tipo de tareas mas comun que se vence sin completarse, dado una fecha Y\n";
-    cout<<"6. Cual es el tipo de importancia mas usado por las personas\n";
-    cout<<"7. Que es el tipo de tarea mas comun en tareas activas de importancia media\n";
-    cout<<"8. Que es el tipo de tarea mas comun en tareas realizadas de importancia alta\n";
-    cout<<"9. Volver al Menu Principal\n";
-    int opcion;
-    cout<<"Ingrese la opcion que desea realizar: ";
-    cin>>opcion;
-    switch(opcion){
-        case 1:{
 
-            break;
-        }
-        case 2:{
 
-            break;
-        }
-        case 3:{
 
-            break;
-        }
-        case 4:{
 
-            break;
-        }
-        case 5:{
-
-            break;
-        }
-        case 6:{
-
-            break;
-        }
-        case 7:{
-            
-            break;
-        }
-        case 8:{
-
-            break;
-        }
-        case 9:{
-            return;
-            break;
-        }
-        default:{
-            cout<<"Opcion no valida\n";
-            MenuConsulta();
-        }
-    }           
-}
-
-void MenuImprimir(){
-    system("cls");
-    cout<<"------------Menu de Impresion------------\n";
-    cout<<"\nQue deseas imprimir:\n";
-    cout<<"1. Imprimir las personas\n";
-    cout<<"2. Imprimir la lista de tipos de tarea\n";
-    cout<<"3. Imprimir las personas sin tareas activas\n";
-    cout<<"4. Imprimir las tareas activas de una persona X, por orden de fecha y hora\n";
-    cout<<"5. Imprimir las tareas próximo a vencer (menos de una semana) de una fecha X.\n";
-    cout<<"6. Imprimir todas las subtareas de una tarea X de una persona Y.\n";
-    cout<<"7. Imprimir las tareas realizadas por una persona X.\n";
-    cout<<"8. Imprimir las tareas realizadas al 100%\n";
-    cout<<"9. Volver al Menu Principal\n";
-    int opcion;
-    cout<<"Ingrese la opcion que desea realizar: ";
-    cin>>opcion;cout<<"\n";
-    switch(opcion){
-        case 1:{
-            Hola.MostrarPersona();
-            cout<<"\nVolviendo al Menu...";
-            this_thread::sleep_for(chrono::seconds(3));
-            break;
-        }
-        case 2:{
-            int cedula;
-            cout<<"Lista de personas:\n";
-            Hola.MostrarPersona();
-            cout<<"De cual persona deseas ver la lista de tipos de tareas (ingrese la cedula): ";
-            cin>> cedula;
-            cout<<"\n";
-            Hola.MostrarTipoDeTareasDeTareasActivas(cedula);
-            cout<<"\nVolviendo al Menu...";
-            this_thread::sleep_for(chrono::seconds(5));
-            break;
-        }
-        case 3:{
-
-            break;
-        }
-        case 4:{
-
-            break;
-        }
-        case 5:{
-
-            break;
-        }
-        case 6:{
-
-            break;
-        }
-        case 7:{
-            
-            break;
-        }
-        case 8:{
-
-            break;
-        }
-        case 9:{
-            return;
-            break;
-        }
-        default:{
-            cout<<"Opcion no valida\n";
-            MenuImprimir();}
-    }
-}
-void Menu(){
-    system("cls");
-    cout<<"------------Bienvenido al Gestor de Tareas------------\n";
-    cout<<"\nQue deseas hacer:\n";
-    cout<<"1. Insertar persona\n";
-    cout<<"2. Borrar persona\n";
-    cout<<"3. Insertar tipo de tarea\n";
-    cout<<"4. Insertar tarea activa a una persona X\n";
-    cout<<"5. Modificar tarea activa de una persona X\n";
-    cout<<"6. Borrar tarea activa de una persona X\n";
-    cout<<"7. Insertar subtarea a una tarea activa de una persona X\n";
-    cout<<"8. Borrar subtarea de una tarea activa de una persona X\n";
-    cout<<"9. Modificar el porcentaje de avance y estado de completado a una subtarea X\n";
-    cout<<"10. Realizar alguna consulta de datos\n";
-    cout<<"11. Imprimir datos\n";
-    cout<<"12. Salir\n";
-    int opcion;
-    cout<<"Ingrese la opcion que desea realizar: ";
-    cin>>opcion;
-    switch(opcion){
-        case 1:{
-            string nombre, apellido;
-            int edad, cedula;
-            cout<<"Ingrese el nombre de la persona: ";
-            cin>>nombre;
-            cout<<"Ingrese el apellido de la persona: ";
-            cin>>apellido;
-            cout<<"Ingrese la edad de la persona: ";
-            cin>>edad;
-            cout<<"Ingrese la cedula de la persona: ";
-            cin>>cedula;
-            Hola.InsertarPersona(nombre,apellido,edad,cedula);
-            Menu();
-            break;
-        }
-        case 2:{
-            string nombre, apellido;
-            cout<<"Ingrese el nombre de la persona que desea borrar: ";
-            cin>>nombre;
-            cout<<"Ingrese el apellido de la persona que desea borrar: ";
-            cin>>apellido;
-            Hola.BorrarPersona(nombre,apellido);
-            Menu();
-            break;
-        }
-        case 3:{
-            int id;
-            string nombreDeTipoDeTarea, descripcion;
-            cout<<"Ingrese el id de la tarea: ";
-            cin>>id;
-            cout<<"Ingrese el nombre de la tarea: ";
-            cin>>nombreDeTipoDeTarea;
-            cout<<"Ingrese la descripcion de la tarea: ";
-            cin>>descripcion;
-            Hola.InsertarTipoDeTareaATareActivas(1,id,nombreDeTipoDeTarea,descripcion);
-            Menu();
-            break;
-        }
-        case 4:{
-            int cedula, idTipoTarea, mes, dia, anio, hora;
-            string Descripcion, NivelDeImportancia;
-            cout<<"Ingrese la cedula de la persona: ";
-            cin>>cedula;
-            cout<<"Ingrese el id de la tarea: ";
-            cin>>idTipoTarea;
-            cout<<"Ingrese la descripcion de la tarea: ";
-            cin>>Descripcion;
-            cout<<"Ingrese el nivel de importancia de la tarea: ";
-            cin>>NivelDeImportancia;
-            cout<<"Ingrese el mes de la tarea: ";
-            cin>>mes;
-            cout<<"Ingrese el dia de la tarea: ";
-            cin>>dia;
-            cout<<"Ingrese el anio de la tarea: ";
-            cin>>anio;
-            cout<<"Ingrese la hora de la tarea: ";
-            cin>>hora;
-            Hola.InsertarTareaActiva(cedula,idTipoTarea,Descripcion,NivelDeImportancia,mes,dia,anio,hora);
-            Menu();
-            break;
-}
-        case 5:{
-            int cedula, idTipoTarea, nuevoDia, nuevoMes, nuevoAnio, nuevaHora;
-            cout<<"Ingrese la cedula de la persona: ";
-            cin>>cedula;
-            cout<<"Ingrese el id de la tarea: ";
-            cin>>idTipoTarea;
-            cout<<"Ingrese el nuevo dia de la tarea: ";
-            cin>>nuevoDia;
-            cout<<"Ingrese el nuevo mes de la tarea: ";
-            cin>>nuevoMes;
-            cout<<"Ingrese el nuevo anio de la tarea: ";
-            cin>>nuevoAnio;
-            cout<<"Ingrese la nueva hora de la tarea: ";
-            cin>>nuevaHora;
-            Hola.ModificarTareas(cedula,idTipoTarea,nuevoDia,nuevoMes,nuevoAnio,nuevaHora);
-            Menu();
-            break;
-        }
-        case 6:{
-            int cedula, idTipoTarea;
-            cout<<"Ingrese la cedula de la persona: ";
-            cin>>cedula;
-            cout<<"Ingrese el id de la tarea: ";
-            cin>>idTipoTarea;
-            Hola.BorrarTareas(cedula,idTipoTarea);
-            Menu();
-            break;
-        }
-        case 7:{
-            int cedula, idTipoTarea, avanze;
-            string nombre, comentarios;
-            cout<<"Ingrese la cedula de la persona: ";
-            cin>>cedula;
-            cout<<"Ingrese el id de la tarea: ";
-            cin>>idTipoTarea;
-            cout<<"Ingrese el nombre de la subtarea: ";
-            cin>>nombre;
-            cout<<"Ingrese los comentarios de la subtarea: ";
-            cin>>comentarios;
-            cout<<"Ingrese el porcentaje de avance de la subtarea: ";
-            cin>>avanze;
-            Hola.InsertarSubTareaEnTareaActiva(cedula,idTipoTarea,nombre,comentarios,avanze);
-            Menu();
-            break;
-        }
-        case 8:{
-            int cedula, idTipoTarea;
-            string nombre;
-            cout<<"Ingrese la cedula de la persona: ";
-            cin>>cedula;
-            cout<<"Ingrese el id de la tarea: ";
-            cin>>idTipoTarea;
-            cout<<"Ingrese el nombre de la subtarea: ";
-            cin>>nombre;
-            Hola.BorrarSubTareaDeTareaActiva(cedula,idTipoTarea,nombre);
-            Menu();
-            break;
-        }
-        case 9:{
-            int cedula, idTipoTarea, nuevoAvanze;
-            string nombreDeSubtarea;
-            cout<<"Ingrese la cedula de la persona: ";
-            cin>>cedula;
-            cout<<"Ingrese el id de la tarea: ";
-            cin>>idTipoTarea;
-            cout<<"Ingrese el nombre de la subtarea: ";
-            cin>>nombreDeSubtarea;
-            cout<<"Ingrese el nuevo porcentaje de avance de la subtarea: ";
-            cin>>nuevoAvanze;
-            Hola.ModificarSubTareaDePersona(cedula,idTipoTarea,nombreDeSubtarea,nuevoAvanze);
-            Menu();
-            break;
-        }
-        case 10:{
-            MenuConsulta();
-            Menu();
-            break;
-        }
-        case 11:{
-            MenuImprimir();
-            Menu();
-            break;
-        }
-        case 12:{
-            cout<<"Gracias por usar el Gestor de Tareas";
-            break;
-        }
-        default:{
-            cout<<"Opcion no valida";
-            Menu();
-            break;
-        }
-    }
-}
 
 
 int main(){
-    cargarDatos();
-    Menu();
+    ListaDePersonas Hola;
+    Hola.InsertarPersona("Juan","Perez",20,123456);
+    Hola.InsertarPersona("Pedro","Perez",20,12);
+    Hola.InsertarPersona("Maria","Perez",20,123);
+    Hola.InsertarPersona("Jony","Perez",20,0);
+    Hola.MostrarPersona();
+
+    Hola.BorrarPersona("Maria","Perez");
+    Hola.MostrarPersona();
+    cout<<endl;
+    
+    
+    Hola.InsertarTareaActiva(123456,1,"Hacer tarea","Alta",12,12,2021,18);
+    Hola.InsertarTareaActiva(123456,2,"Hacer tarea 2","Alta",12,12,2021,17);
+    Hola.InsertarTareaActiva(123456,3,"Hacer tarea 3","Alta",12,12,2021,33);
+    Hola.MostrarTareasActivasDePersona(123456);
+    cout<<endl;
+    Hola.BorrarTareas(123456,2);
+    Hola.MostrarTareasActivasDePersona(123456);
+    // Hola.MostrarTareasCompletadasDeLaPersona(123456);
+
+    cout<<endl;
+    Hola.ModificarTareas(123456,1,32,312,312,31);
+    Hola.MostrarTareasActivasDePersona(123456);
+    Hola.InsertarSubTareaEnTareaActiva(123456,1,"Subtarea","Prueba",30);
+    Hola.MostrarSubTareaDePersona(123456,1);
+    Hola.ModificarSubTareaDePersona(123456,1,"Subtarea",100);
+    Hola.MostrarSubTareaDePersona(123456,1);
+    Hola.InsertarSubTareaEnTareaActiva(123456,1,"Subtarea2","Prueba",30);
+    Hola.MostrarSubTareaDePersona(123456,1);
+    cout<<endl;
+
+    cout<<"JAJAJA"<<endl;
 
 
+     cout<<endl;
+    Hola.InsertarTipoDeTareaATareActivas(123456,1,"estudio","cosas de la U");
+    Hola.InsertarTipoDeTareaATareActivas(123456,2,"hogar","casa");
+    Hola.MostrarTipoDeTareasDeTareasActivas(123456);
+
+
+
+    cout<<"Mostrando tareas completadas"<<endl;
+    Hola.InsertarSubTareaEnTareaActiva(123456,1,"Subtarea2","Prueba",30);
+    Hola.InsertarSubTareaEnTareaActiva(123456,1,"Subtarea3","Prueba",30);
+    Hola.InsertarSubTareaEnTareaActiva(123456,1,"Subtarea4","Prueba",100);
+    Hola.ModificarSubTareaDePersona(123456,1,"Subtarea2",100);
+    Hola.ModificarSubTareaDePersona(123456,1,"Subtarea3",100);
+    Hola.MostrarTareasCompletadasDeLaPersona(123456);
     return 0;
 }
+
+
+
+
+
+
+
+
+
