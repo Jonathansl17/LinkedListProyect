@@ -3,6 +3,7 @@
 #include <chrono>
 #include <vector>
 #include <algorithm>
+#include <unordered_map>
 using namespace std;
 
 
@@ -478,6 +479,175 @@ public:
             temp = temp->next;
         }
     }
+    void PersonaConMasTareasActivas() {
+    if (head == nullptr) {
+        cout << "No hay personas en la lista." << endl;
+        return;
+    }
+
+    NodoDePersonas* temp = head;
+    NodoDePersonas* personaConMasTareas = nullptr;
+    int maxTareas = 0;
+
+    while (temp != nullptr) {
+        // Contar tareas activas de la persona actual
+        NodoDeTareasActivas* tareaTemp = temp->TareasDeLaPersona->head;
+        int conteoTareas = 0;
+
+        if (tareaTemp != nullptr) {
+            do {
+                conteoTareas++;
+                tareaTemp = tareaTemp->next;
+            } while (tareaTemp != temp->TareasDeLaPersona->head); 
+        }
+
+        // Actualizar si encontramos una persona con más tareas
+        if (conteoTareas > maxTareas) {
+            maxTareas = conteoTareas;
+            personaConMasTareas = temp;
+        }
+
+        temp = temp->next;
+    }
+
+    if (personaConMasTareas != nullptr) {
+        cout << "La persona con mas tareas activas es: " 
+             << personaConMasTareas->nombre << " " 
+             << personaConMasTareas->apellido 
+             << " con " << maxTareas << " tareas activas." << endl;
+    } 
+    else {
+        cout << "No hay personas con tareas activas." << endl;
+    }
+    }
+    void PersonaConMasTareasDeUnTipo(int idTipoTarea) {
+    if (head == nullptr) {
+        cout << "No hay personas en la lista." << endl;
+        return;
+    }
+
+    NodoDePersonas* temp = head;
+    NodoDePersonas* personaConMasTareas = nullptr;
+    int maxTareas = 0;
+
+    while (temp != nullptr) {
+        NodoDeTareasActivas* tareaTemp = temp->TareasDeLaPersona->head;
+        int conteoTareas = 0;
+
+        if (tareaTemp != nullptr) {
+            do {
+                if (tareaTemp->idTipoTarea == idTipoTarea) {
+                    conteoTareas++;
+                }
+                tareaTemp = tareaTemp->next;
+            } while (tareaTemp != temp->TareasDeLaPersona->head); 
+        }
+
+        if (conteoTareas > maxTareas) {
+            maxTareas = conteoTareas;
+            personaConMasTareas = temp;
+        }
+
+        temp = temp->next;
+    }
+
+    if (personaConMasTareas != nullptr) {
+        cout << "La persona con mas tareas activas del tipo " << idTipoTarea << " es: " 
+             << personaConMasTareas->nombre << " " 
+             << personaConMasTareas->apellido 
+             << " con " << maxTareas << " tareas de ese tipo." << endl;
+    } else {
+        cout << "No hay personas con tareas activas del tipo " << idTipoTarea << "." << endl;
+    }
+}
+    void TipoDeTareaMasComun() {
+    if (head == nullptr) {
+        cout << "No hay personas en la lista." << endl;
+        return;
+    }
+
+    unordered_map<int, int> conteoTareasPorTipo;
+    NodoDePersonas* temp = head;
+
+    while (temp != nullptr) {
+        NodoDeTareasActivas* tareaTemp = temp->TareasDeLaPersona->head;
+
+        if (tareaTemp != nullptr) {
+            do {
+                conteoTareasPorTipo[tareaTemp->idTipoTarea]++;
+                tareaTemp = tareaTemp->next;
+            } while (tareaTemp != temp->TareasDeLaPersona->head);
+        }
+
+        temp = temp->next;
+    }
+
+    // Encontrar el tipo de tarea más común
+    int tipoMasComun = -1;
+    int maxConteo = 0;
+
+    for (const auto& par : conteoTareasPorTipo) {
+        if (par.second > maxConteo) {
+            maxConteo = par.second;
+            tipoMasComun = par.first;
+        }
+    }
+
+    if (tipoMasComun != -1) {
+        cout << "El tipo de tarea mas comun es: " << tipoMasComun
+             << " con " << maxConteo << " ocurrencias." << endl;
+    } else {
+        cout << "No hay tareas activas." << endl;
+    }
+}
+void PersonaConMasTareasVencidasDeUnTipo(int idTipoTarea, int dia, int mes, int anio) {
+    if (head == nullptr) {
+        cout << "No hay personas en la lista." << endl;
+        return;
+    }
+
+    NodoDePersonas* temp = head;
+    NodoDePersonas* personaConMasTareasVencidas = nullptr;
+    int maxTareasVencidas = 0;
+
+    while (temp != nullptr) {
+        NodoDeTareasActivas* tareaTemp = temp->TareasDeLaPersona->head;
+        int conteoTareasVencidas = 0;
+
+        if (tareaTemp != nullptr) {
+            do {
+                // Verificar si la tarea es del tipo correcto y si está vencida
+                if (tareaTemp->idTipoTarea == idTipoTarea) {
+                    if ((tareaTemp->anio < anio) || 
+                        (tareaTemp->anio == anio && tareaTemp->mes < mes) ||
+                        (tareaTemp->anio == anio && tareaTemp->mes == mes && tareaTemp->dia < dia)) {
+                        conteoTareasVencidas++;
+                    }
+                }
+                tareaTemp = tareaTemp->next;
+            } while (tareaTemp != temp->TareasDeLaPersona->head);
+        }
+
+        if (conteoTareasVencidas > maxTareasVencidas) {
+            maxTareasVencidas = conteoTareasVencidas;
+            personaConMasTareasVencidas = temp;
+        }
+
+        temp = temp->next;
+    }
+
+    if (personaConMasTareasVencidas != nullptr) {
+        cout << "La persona con mas tareas vencidas del tipo " << idTipoTarea << " es: " 
+             << personaConMasTareasVencidas->nombre << " " 
+             << personaConMasTareasVencidas->apellido 
+             << " con " << maxTareasVencidas << " tareas vencidas." << endl;
+    } else {
+        cout << "No hay personas con tareas vencidas del tipo " << idTipoTarea << "." << endl;
+    }
+}
+
+
+
 
     void MostrarPersona() {
         NodoDePersonas* temp = head;
@@ -867,8 +1037,8 @@ public:
 
 
 
-
 ListaDePersonas Hola;
+
 void cargarDatos(){
     //Insertar personas
     Hola.InsertarPersona("Juan","Perez",20,1);
@@ -878,8 +1048,15 @@ void cargarDatos(){
     Hola.InsertarPersona("Federico","Murillo",23,5);
     //Insertar tipo de tareas activas
     Hola.InsertarTareaActiva(1,1,"Estudair","s",3,3,2024,3);
+    Hola.InsertarTareaActiva(1,1,"Eadsada","s",3,3,2024,3);
+    Hola.InsertarTareaActiva(1,1,"Edawdasdas","s",3,3,2024,3);
+    Hola.InsertarTareaActiva(1,1,"Edawdasdas","s",3,3,2024,3);
     Hola.InsertarTareaActiva(1,2,"Limpiar","s",2,2,2000,3);
-    Hola.InsertarTareaActiva(3,2,"Limpiar","s",3,3,2020,3);
+    Hola.InsertarTareaActiva(3,2,"Limpiar","s",2,2,2000,3);
+    Hola.InsertarTareaActiva(2,2,"Limpiar","s",3,3,2020,3);
+    Hola.InsertarTareaActiva(2,2,"Limpiar","s",3,3,2020,3);
+    Hola.InsertarTareaActiva(2,2,"Limpiar","s",3,3,2020,3);
+    Hola.InsertarTareaActiva(2,2,"Limpiar","s",3,3,2020,3);
     Hola.InsertarTipoDeTareaATareActivas(1,1,"Estudio","Trabajos del cole");
     Hola.InsertarTipoDeTareaATareActivas(1,2,"Casa","Trabajos del cole");
 
@@ -903,19 +1080,40 @@ void MenuConsulta(){
     cin>>opcion;
     switch(opcion){
         case 1:{
-
+            Hola.PersonaConMasTareasActivas();
+            cout<<"\nVolviendo al Menu...";
+            this_thread::sleep_for(chrono::seconds(5));
             break;
         }
         case 2:{
+            int idTipoTarea;
+            cout<<"Ingrese el id del tipo de tarea: ";
+            cin>>idTipoTarea;
+            Hola.PersonaConMasTareasDeUnTipo(idTipoTarea);
+            cout<<"\nVolviendo al Menu...";
+            this_thread::sleep_for(chrono::seconds(5));
 
             break;
         }
         case 3:{
-
+            Hola.TipoDeTareaMasComun();
+            cout<<"\nVolviendo al Menu...";
+            this_thread::sleep_for(chrono::seconds(5));
             break;
         }
         case 4:{
-
+            int idTipoTarea, dia, mes, anio;
+            cout << "Ingrese el ID del tipo de tarea: ";
+            cin >> idTipoTarea;
+            cout << "Ingrese el dia: ";
+            cin >> dia;
+            cout << "Ingrese el mes: ";
+            cin >> mes;
+            cout << "Ingrese el año: ";
+            cin >> anio;
+            Hola.PersonaConMasTareasVencidasDeUnTipo(idTipoTarea, dia, mes, anio);
+            cout << "\nVolviendo al Menu...";
+            this_thread::sleep_for(chrono::seconds(5));
             break;
         }
         case 5:{
