@@ -1,4 +1,6 @@
 #include <iostream> 
+#include <thread>
+#include <chrono>
 using namespace std;
 
 
@@ -873,13 +875,15 @@ void MenuImprimir(){
     cout<<"9. Volver al Menu Principal\n";
     int opcion;
     cout<<"Ingrese la opcion que desea realizar: ";
-    cin>>opcion;
+    cin>>opcion;cout<<"\n";
     switch(opcion){
         case 1:{
-
+            Hola.MostrarPersona();
+            this_thread::sleep_for(chrono::seconds(3));
             break;
         }
         case 2:{
+            
 
             break;
         }
