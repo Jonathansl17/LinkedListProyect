@@ -799,25 +799,138 @@ void cargarDatos(){
     
 }
 void MenuConsulta(){
+    system("cls");
+    cout<<"------------Menu de Consultas------------\n";
+    cout<<"\nQue deseas consultar:\n";
+    cout<<"1. Cual es la persona que tiene mas tareas activas\n";
+    cout<<"2. Cual es la persona que tiene mas tareas activas de un tipo X\n";
+    cout<<"3. Que tipo de tarea es el mas comun\n";
+    cout<<"4. Cual es la persona que tiene mas tareas vencidas de un tipo X dado una fecha Y\n";
+    cout<<"5. Cual es el tipo de tareas mas comun que se vence sin completarse, dado una fecha Y\n";
+    cout<<"6. Cual es el tipo de importancia mas usado por las personas\n";
+    cout<<"7. Que es el tipo de tarea mas comun en tareas activas de importancia media\n";
+    cout<<"8. Que es el tipo de tarea mas comun en tareas realizadas de importancia alta\n";
+    cout<<"9. Volver al Menu Principal\n";
+    int opcion;
+    cout<<"Ingrese la opcion que desea realizar: ";
+    cin>>opcion;
+    switch(opcion){
+        case 1:{
 
+            break;
+        }
+        case 2:{
+
+            break;
+        }
+        case 3:{
+
+            break;
+        }
+        case 4:{
+
+            break;
+        }
+        case 5:{
+
+            break;
+        }
+        case 6:{
+
+            break;
+        }
+        case 7:{
+            
+            break;
+        }
+        case 8:{
+
+            break;
+        }
+        case 9:{
+            return;
+            break;
+        }
+        default:{
+            cout<<"Opcion no valida\n";
+            MenuConsulta();
+        }
+    }           
 }
-void MenuImprimir(){
 
+void MenuImprimir(){
+    system("cls");
+    cout<<"------------Menu de Impresion------------\n";
+    cout<<"\nQue deseas imprimir:\n";
+    cout<<"1. Imprimir las personas\n";
+    cout<<"2. Imprimir la lista de tipos de tarea\n";
+    cout<<"3. Imprimir las personas sin tareas activas\n";
+    cout<<"4. Imprimir las tareas activas de una persona X, por orden de fecha y hora\n";
+    cout<<"5. Imprimir las tareas próximo a vencer (menos de una semana) de una fecha X.\n";
+    cout<<"6. Imprimir todas las subtareas de una tarea X de una persona Y.\n";
+    cout<<"7. Imprimir las tareas realizadas por una persona X.\n";
+    cout<<"8. Imprimir las tareas realizadas al 100%\n";
+    cout<<"9. Volver al Menu Principal\n";
+    int opcion;
+    cout<<"Ingrese la opcion que desea realizar: ";
+    cin>>opcion;
+    switch(opcion){
+        case 1:{
+
+            break;
+        }
+        case 2:{
+
+            break;
+        }
+        case 3:{
+
+            break;
+        }
+        case 4:{
+
+            break;
+        }
+        case 5:{
+
+            break;
+        }
+        case 6:{
+
+            break;
+        }
+        case 7:{
+            
+            break;
+        }
+        case 8:{
+
+            break;
+        }
+        case 9:{
+            return;
+            break;
+        }
+        default:{
+            cout<<"Opcion no valida\n";
+            MenuImprimir();}
+    }
 }
 void Menu(){
+    system("cls");
     cout<<"------------Bienvenido al Gestor de Tareas------------\n";
     cout<<"\nQue deseas hacer:\n";
-    cout<<"1. Insertar Persona\n";
-    cout<<"2. Borrar Persona\n";
-    cout<<"3. Insertar Tipo de Tarea\n";
-    cout<<"4. Insertar Tarea Activa a una Persona X\n";
-    cout<<"5. Modificar Tarea Activa de una Persona X\n";
-    cout<<"6. Borrar Tarea Activa de una Persona X\n";
-    cout<<"7. Insertar Subtarea a una Tarea Activa de una Persona X\n";
-    cout<<"8. Borrar Subtarea de una Tarea Activa de una Persona X\n";
+    cout<<"1. Insertar persona\n";
+    cout<<"2. Borrar persona\n";
+    cout<<"3. Insertar tipo de tarea\n";
+    cout<<"4. Insertar tarea activa a una persona X\n";
+    cout<<"5. Modificar tarea activa de una persona X\n";
+    cout<<"6. Borrar tarea activa de una persona X\n";
+    cout<<"7. Insertar subtarea a una tarea activa de una persona X\n";
+    cout<<"8. Borrar subtarea de una tarea activa de una persona X\n";
     cout<<"9. Modificar el porcentaje de avance y estado de completado a una subtarea X\n";
     cout<<"10. Realizar alguna consulta de datos\n";
-    cout<<"11. Imprimir Datos\n";
+    cout<<"11. Imprimir datos\n";
     cout<<"12. Salir\n";
     int opcion;
     cout<<"Ingrese la opcion que desea realizar: ";
@@ -978,6 +1091,8 @@ void Menu(){
         }
     }
 }
+
+
 int main(){
     cargarDatos();
     Menu();
