@@ -1,6 +1,8 @@
 #include <iostream> 
 #include <thread>
 #include <chrono>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 
@@ -514,10 +516,35 @@ public:
         if (persona != nullptr) {
             NodoDeTareasActivas* tarea = persona->TareasDeLaPersona->head;
             if (tarea != nullptr) {
+                // Crear un vector para almacenar las tareas
+                vector<NodoDeTareasActivas*> tareasVector;
+    
+                // Agregar las tareas al vector
                 do {
-                    cout << tarea->idTipoTarea << " " << tarea->Descripcion << " " << tarea->NivelDeImportancia << " " << tarea->mes << " " << tarea->dia << " " << tarea->anio << " " << tarea->hora << endl;
+                    tareasVector.push_back(tarea);
                     tarea = tarea->next;
                 } while (tarea != persona->TareasDeLaPersona->head);
+    
+                // Ordenar el vector de tareas por fecha y hora
+                sort(tareasVector.begin(), tareasVector.end(), [](const NodoDeTareasActivas* a, const NodoDeTareasActivas* b) {
+                    if (a->anio != b->anio) {
+                        return a->anio < b->anio;
+                    }
+                    if (a->mes != b->mes) {
+                        return a->mes < b->mes;
+                    }
+                    if (a->dia != b->dia) {
+                        return a->dia < b->dia;
+                    }
+                    return a->hora < b->hora;
+                });
+    
+                // Imprimir las tareas en orden
+                for (const auto& tarea : tareasVector) {
+                    cout << tarea->idTipoTarea << " " << tarea->Descripcion << " " << tarea->NivelDeImportancia << " " << tarea->mes << " " << tarea->dia << " " << tarea->anio << " " << tarea->hora << endl;
+                }
+            } else {
+                cout << "No hay tareas activas para esta persona." << endl;
             }
         } else {
             cout << "Persona no encontrada." << endl;
@@ -850,8 +877,9 @@ void cargarDatos(){
     Hola.InsertarPersona("Jonny","Gonzales",19,4);
     Hola.InsertarPersona("Federico","Murillo",23,5);
     //Insertar tipo de tareas activas
-    Hola.InsertarTareaActiva(1,1,"Estudair","s",3,3,3,3);
-    Hola.InsertarTareaActiva(1,2,"Limpiar","s",3,3,3,3);
+    Hola.InsertarTareaActiva(1,1,"Estudair","s",3,3,2024,3);
+    Hola.InsertarTareaActiva(1,2,"Limpiar","s",2,2,2000,3);
+    Hola.InsertarTareaActiva(3,2,"Limpiar","s",3,3,2020,3);
     Hola.InsertarTipoDeTareaATareActivas(1,1,"Estudio","Trabajos del cole");
     Hola.InsertarTipoDeTareaATareActivas(1,2,"Casa","Trabajos del cole");
 
@@ -953,10 +981,32 @@ void MenuImprimir(){
             break;
         }
         case 3:{
+            NodoDePersonas* persona = Hola.head;
+            bool sinTareasActivas = true;
+            while (persona != nullptr) {
+                if (persona->TareasDeLaPersona->head == nullptr) {
+                    cout << persona->nombre << " " << persona->apellido << " no tiene tareas activas." << endl;
+                    sinTareasActivas = false;
+                }
+                persona = persona->next;
+            }
+            if (sinTareasActivas) {
+                cout << "No hay personas sin tareas activas." << endl;
+            }
+            cout<<"\nVolviendo al Menu...";
+            this_thread::sleep_for(chrono::seconds(5));
 
             break;
         }
         case 4:{
+            int ced;
+            cout<<"Lista de personas:\n";
+            Hola.MostrarPersona();
+            cout<<"\nDe cual persona deseas ver las tareas activas (ingrese la cedula): ";
+            cin>>ced;
+            Hola.MostrarTareasActivasDePersona(ced);
+            cout<<"\nVolviendo al Menu...";
+            this_thread::sleep_for(chrono::seconds(5));
 
             break;
         }
