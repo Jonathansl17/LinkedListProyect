@@ -788,22 +788,196 @@ public:
 
 ListaDePersonas Hola;
 void cargarDatos(){
+    //Insertar personas
     Hola.InsertarPersona("Juan","Perez",20,1);
     Hola.InsertarPersona("Pedro","Gomez",21,2);
     Hola.InsertarPersona("Maria","Rodriguez",18,3);
     Hola.InsertarPersona("Jonny","Gonzales",19,4);
     Hola.InsertarPersona("Federico","Murillo",23,5);
+    //Insertar tareas activas
+
     
 }
+void MenuConsulta(){
 
-
-void Menu(){
-    cout<<"------------Bienvenido al Gestor de Tareas------------";
-    cout<<
 }
+void MenuImprimir(){
 
-
-
+}
+void Menu(){
+    cout<<"------------Bienvenido al Gestor de Tareas------------\n";
+    cout<<"\nQue deseas hacer:\n";
+    cout<<"1. Insertar Persona\n";
+    cout<<"2. Borrar Persona\n";
+    cout<<"3. Insertar Tipo de Tarea\n";
+    cout<<"4. Insertar Tarea Activa a una Persona X\n";
+    cout<<"5. Modificar Tarea Activa de una Persona X\n";
+    cout<<"6. Borrar Tarea Activa de una Persona X\n";
+    cout<<"7. Insertar Subtarea a una Tarea Activa de una Persona X\n";
+    cout<<"8. Borrar Subtarea de una Tarea Activa de una Persona X\n";
+    cout<<"9. Modificar el porcentaje de avance y estado de completado a una subtarea X\n";
+    cout<<"10. Realizar alguna consulta de datos\n";
+    cout<<"11. Imprimir Datos\n";
+    cout<<"12. Salir\n";
+    int opcion;
+    cout<<"Ingrese la opcion que desea realizar: ";
+    cin>>opcion;
+    switch(opcion){
+        case 1:{
+            string nombre, apellido;
+            int edad, cedula;
+            cout<<"Ingrese el nombre de la persona: ";
+            cin>>nombre;
+            cout<<"Ingrese el apellido de la persona: ";
+            cin>>apellido;
+            cout<<"Ingrese la edad de la persona: ";
+            cin>>edad;
+            cout<<"Ingrese la cedula de la persona: ";
+            cin>>cedula;
+            Hola.InsertarPersona(nombre,apellido,edad,cedula);
+            Menu();
+            break;
+        }
+        case 2:{
+            string nombre, apellido;
+            cout<<"Ingrese el nombre de la persona que desea borrar: ";
+            cin>>nombre;
+            cout<<"Ingrese el apellido de la persona que desea borrar: ";
+            cin>>apellido;
+            Hola.BorrarPersona(nombre,apellido);
+            Menu();
+            break;
+        }
+        case 3:{
+            int id;
+            string nombreDeTipoDeTarea, descripcion;
+            cout<<"Ingrese el id de la tarea: ";
+            cin>>id;
+            cout<<"Ingrese el nombre de la tarea: ";
+            cin>>nombreDeTipoDeTarea;
+            cout<<"Ingrese la descripcion de la tarea: ";
+            cin>>descripcion;
+            Hola.InsertarTipoDeTareaATareActivas(1,id,nombreDeTipoDeTarea,descripcion);
+            Menu();
+            break;
+        }
+        case 4:{
+            int cedula, idTipoTarea, mes, dia, anio, hora;
+            string Descripcion, NivelDeImportancia;
+            cout<<"Ingrese la cedula de la persona: ";
+            cin>>cedula;
+            cout<<"Ingrese el id de la tarea: ";
+            cin>>idTipoTarea;
+            cout<<"Ingrese la descripcion de la tarea: ";
+            cin>>Descripcion;
+            cout<<"Ingrese el nivel de importancia de la tarea: ";
+            cin>>NivelDeImportancia;
+            cout<<"Ingrese el mes de la tarea: ";
+            cin>>mes;
+            cout<<"Ingrese el dia de la tarea: ";
+            cin>>dia;
+            cout<<"Ingrese el anio de la tarea: ";
+            cin>>anio;
+            cout<<"Ingrese la hora de la tarea: ";
+            cin>>hora;
+            Hola.InsertarTareaActiva(cedula,idTipoTarea,Descripcion,NivelDeImportancia,mes,dia,anio,hora);
+            Menu();
+            break;
+}
+        case 5:{
+            int cedula, idTipoTarea, nuevoDia, nuevoMes, nuevoAnio, nuevaHora;
+            cout<<"Ingrese la cedula de la persona: ";
+            cin>>cedula;
+            cout<<"Ingrese el id de la tarea: ";
+            cin>>idTipoTarea;
+            cout<<"Ingrese el nuevo dia de la tarea: ";
+            cin>>nuevoDia;
+            cout<<"Ingrese el nuevo mes de la tarea: ";
+            cin>>nuevoMes;
+            cout<<"Ingrese el nuevo anio de la tarea: ";
+            cin>>nuevoAnio;
+            cout<<"Ingrese la nueva hora de la tarea: ";
+            cin>>nuevaHora;
+            Hola.ModificarTareas(cedula,idTipoTarea,nuevoDia,nuevoMes,nuevoAnio,nuevaHora);
+            Menu();
+            break;
+        }
+        case 6:{
+            int cedula, idTipoTarea;
+            cout<<"Ingrese la cedula de la persona: ";
+            cin>>cedula;
+            cout<<"Ingrese el id de la tarea: ";
+            cin>>idTipoTarea;
+            Hola.BorrarTareas(cedula,idTipoTarea);
+            Menu();
+            break;
+        }
+        case 7:{
+            int cedula, idTipoTarea, avanze;
+            string nombre, comentarios;
+            cout<<"Ingrese la cedula de la persona: ";
+            cin>>cedula;
+            cout<<"Ingrese el id de la tarea: ";
+            cin>>idTipoTarea;
+            cout<<"Ingrese el nombre de la subtarea: ";
+            cin>>nombre;
+            cout<<"Ingrese los comentarios de la subtarea: ";
+            cin>>comentarios;
+            cout<<"Ingrese el porcentaje de avance de la subtarea: ";
+            cin>>avanze;
+            Hola.InsertarSubTareaEnTareaActiva(cedula,idTipoTarea,nombre,comentarios,avanze);
+            Menu();
+            break;
+        }
+        case 8:{
+            int cedula, idTipoTarea;
+            string nombre;
+            cout<<"Ingrese la cedula de la persona: ";
+            cin>>cedula;
+            cout<<"Ingrese el id de la tarea: ";
+            cin>>idTipoTarea;
+            cout<<"Ingrese el nombre de la subtarea: ";
+            cin>>nombre;
+            Hola.BorrarSubTareaDeTareaActiva(cedula,idTipoTarea,nombre);
+            Menu();
+            break;
+        }
+        case 9:{
+            int cedula, idTipoTarea, nuevoAvanze;
+            string nombreDeSubtarea;
+            cout<<"Ingrese la cedula de la persona: ";
+            cin>>cedula;
+            cout<<"Ingrese el id de la tarea: ";
+            cin>>idTipoTarea;
+            cout<<"Ingrese el nombre de la subtarea: ";
+            cin>>nombreDeSubtarea;
+            cout<<"Ingrese el nuevo porcentaje de avance de la subtarea: ";
+            cin>>nuevoAvanze;
+            Hola.ModificarSubTareaDePersona(cedula,idTipoTarea,nombreDeSubtarea,nuevoAvanze);
+            Menu();
+            break;
+        }
+        case 10:{
+            MenuConsulta();
+            Menu();
+            break;
+        }
+        case 11:{
+            MenuImprimir();
+            Menu();
+            break;
+        }
+        case 12:{
+            cout<<"Gracias por usar el Gestor de Tareas";
+            break;
+        }
+        default:{
+            cout<<"Opcion no valida";
+            Menu();
+            break;
+        }
+    }
+}
 int main(){
     cargarDatos();
     Menu();
@@ -811,12 +985,3 @@ int main(){
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
