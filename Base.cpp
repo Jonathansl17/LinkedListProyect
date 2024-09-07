@@ -796,7 +796,8 @@ void cargarDatos(){
     Hola.InsertarPersona("Maria","Rodriguez",18,3);
     Hola.InsertarPersona("Jonny","Gonzales",19,4);
     Hola.InsertarPersona("Federico","Murillo",23,5);
-    //Insertar tareas activas
+    //Insertar tipo de tareas activas
+    Hola.InsertarTipoDeTareaATareActivas(1,1,"Estudio","Trabajos del cole");
 
     
 }
