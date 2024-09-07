@@ -797,7 +797,10 @@ void cargarDatos(){
     Hola.InsertarPersona("Jonny","Gonzales",19,4);
     Hola.InsertarPersona("Federico","Murillo",23,5);
     //Insertar tipo de tareas activas
+    Hola.InsertarTareaActiva(1,1,"Estudair","s",3,3,3,3);
+    Hola.InsertarTareaActiva(1,2,"Limpiar","s",3,3,3,3);
     Hola.InsertarTipoDeTareaATareActivas(1,1,"Estudio","Trabajos del cole");
+    Hola.InsertarTipoDeTareaATareActivas(1,2,"Casa","Trabajos del cole");
 
     
 }
@@ -880,12 +883,20 @@ void MenuImprimir(){
     switch(opcion){
         case 1:{
             Hola.MostrarPersona();
+            cout<<"\nVolviendo al Menu...";
             this_thread::sleep_for(chrono::seconds(3));
             break;
         }
         case 2:{
-            
-
+            int cedula;
+            cout<<"Lista de personas:\n";
+            Hola.MostrarPersona();
+            cout<<"De cual persona deseas ver la lista de tipos de tareas (ingrese la cedula): ";
+            cin>> cedula;
+            cout<<"\n";
+            Hola.MostrarTipoDeTareasDeTareasActivas(cedula);
+            cout<<"\nVolviendo al Menu...";
+            this_thread::sleep_for(chrono::seconds(5));
             break;
         }
         case 3:{
