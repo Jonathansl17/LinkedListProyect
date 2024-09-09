@@ -3,7 +3,6 @@
 #include <thread>
 #include <chrono>
 #include <vector>
-#include <algorithm>
 #include <unordered_map>
 using namespace std;
 
@@ -988,7 +987,7 @@ public:
     void MostrarPersona() {
         NodoDePersonas* temp = head;
         while (temp != nullptr) {
-            cout << temp->nombre << " " << temp->apellido << "\t\tCédula: " << temp->cedula << endl;
+            cout << temp->nombre << " " << temp->apellido << "\t\tCedula: " << temp->cedula << endl;
             temp = temp->next;
         }
     }
@@ -1022,28 +1021,53 @@ public:
         if (persona != nullptr) {
             NodoDeTareasActivas* tarea = persona->TareasDeLaPersona->head;
             if (tarea != nullptr) {
-                vector<NodoDeTareasActivas*> tareasVector;
-    
-                do {
-                    tareasVector.push_back(tarea);
+                NodoDeTareasActivas* inicio = tarea;
+                int numTareas = 0;
+                while (tarea->next != inicio) {
                     tarea = tarea->next;
-                } while (tarea != persona->TareasDeLaPersona->head);
-    
-                sort(tareasVector.begin(), tareasVector.end(), [](const NodoDeTareasActivas* a, const NodoDeTareasActivas* b) {
-                    if (a->anio != b->anio) {
-                        return a->anio < b->anio;
+                    numTareas++;
+                }
+                numTareas++;
+
+                for (int i = 0; i < numTareas - 1; i++) {
+                    tarea = persona->TareasDeLaPersona->head;
+                    for (int j = 0; j < numTareas - i - 1; j++) {
+                        if (tarea->anio > tarea->next->anio) {
+                            swap(tarea->anio, tarea->next->anio);
+                            swap(tarea->mes, tarea->next->mes);
+                            swap(tarea->dia, tarea->next->dia);
+                            swap(tarea->hora, tarea->next->hora);
+                            swap(tarea->idTipoTarea, tarea->next->idTipoTarea);
+                            swap(tarea->Descripcion, tarea->next->Descripcion);
+                            swap(tarea->NivelDeImportancia, tarea->next->NivelDeImportancia);
+                        } else if (tarea->anio == tarea->next->anio && tarea->mes > tarea->next->mes) {
+                            swap(tarea->mes, tarea->next->mes);
+                            swap(tarea->dia, tarea->next->dia);
+                            swap(tarea->hora, tarea->next->hora);
+                            swap(tarea->idTipoTarea, tarea->next->idTipoTarea);
+                            swap(tarea->Descripcion, tarea->next->Descripcion);
+                            swap(tarea->NivelDeImportancia, tarea->next->NivelDeImportancia);
+                        } else if (tarea->anio == tarea->next->anio && tarea->mes == tarea->next->mes && tarea->dia > tarea->next->dia) {
+                            swap(tarea->dia, tarea->next->dia);
+                            swap(tarea->hora, tarea->next->hora);
+                            swap(tarea->idTipoTarea, tarea->next->idTipoTarea);
+                            swap(tarea->Descripcion, tarea->next->Descripcion);
+                            swap(tarea->NivelDeImportancia, tarea->next->NivelDeImportancia);
+
+                        } else if (tarea->anio == tarea->next->anio && tarea->mes == tarea->next->mes && tarea->dia == tarea->next->dia && tarea->hora > tarea->next->hora) {
+                            swap(tarea->hora, tarea->next->hora);
+                            swap(tarea->idTipoTarea, tarea->next->idTipoTarea);
+                            swap(tarea->Descripcion, tarea->next->Descripcion);
+                            swap(tarea->NivelDeImportancia, tarea->next->NivelDeImportancia);
+                        }
+                        tarea = tarea->next;
                     }
-                    if (a->mes != b->mes) {
-                        return a->mes < b->mes;
-                    }
-                    if (a->dia != b->dia) {
-                        return a->dia < b->dia;
-                    }
-                    return a->hora < b->hora;
-                });
-    
-                for (const auto& tarea : tareasVector) {
+                }
+
+                tarea = persona->TareasDeLaPersona->head;
+                for (int i = 0; i < numTareas; i++) {
                     cout << tarea->idTipoTarea << " " << tarea->Descripcion << " " << tarea->NivelDeImportancia << " " << tarea->mes << " " << tarea->dia << " " << tarea->anio << " " << tarea->hora << endl;
+                    tarea = tarea->next;
                 }
             } else {
                 cout << "No hay tareas activas para esta persona." << endl;
@@ -1052,7 +1076,7 @@ public:
             cout << "Persona no encontrada." << endl;
         }
     }
-
+    
     /* Muesta las tareas completadas de una persona dado su número de cédula*/
     void MostrarTareasCompletadasDeLaPersona(int cedula) {
         NodoDePersonas* persona = BuscarPersonaPorCedula(cedula);
@@ -1517,13 +1541,14 @@ void MenuConsulta(){
 
 /* Menú para imprimir*/
 void MenuImprimir(){
+    system("cls");
     cout<<"------------Menu de Impresion------------\n";
     cout<<"\nQue deseas imprimir:\n";
     cout<<"1. Imprimir las personas\n";
     cout<<"2. Imprimir la lista de tipos de tarea\n";
     cout<<"3. Imprimir las personas sin tareas activas\n";
     cout<<"4. Imprimir las tareas activas de una persona X, por orden de fecha y hora\n";
-    cout<<"5. Imprimir las tareas próximo a vencer (menos de una semana) de una fecha X.\n";
+    cout<<"5. Imprimir las tareas proximo a vencer (menos de una semana) de una fecha X.\n";
     cout<<"6. Imprimir todas las subtareas de una tarea X de una persona Y.\n";
     cout<<"7. Imprimir las tareas realizadas por una persona X.\n";
     cout<<"8. Imprimir las tareas realizadas al 100%\n";
@@ -1641,6 +1666,7 @@ void MenuImprimir(){
 
 /*Menú principal */
 void Menu(){
+    system("cls");
     cout<<"------------Bienvenido al Gestor de Tareas------------\n";
     cout<<"\nQue deseas hacer:\n";
     cout<<"1. Insertar persona\n";
