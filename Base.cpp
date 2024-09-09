@@ -1686,9 +1686,10 @@ void Menu(){
     cin>>opcion;
     switch(opcion){
         case 1:{
+            Hola.MostrarPersona();
             string nombre, apellido;
             int edad, cedula;
-            cout<<"Ingrese el nombre de la persona: ";
+            cout<<"\nIngrese el nombre de la persona: ";
             getline(cin, nombre);
             cout<<"Ingrese el apellido de la persona: ";
             getline(cin, apellido);
@@ -1702,8 +1703,9 @@ void Menu(){
             break;
         }
         case 2:{
+            Hola.MostrarPersona();
             string nombre, apellido;
-            cout<<"Ingrese el nombre de la persona que desea borrar: ";
+            cout<<"\nIngrese el nombre de la persona que desea borrar: ";
             getline(cin, nombre);
             cout<<"Ingrese el apellido de la persona que desea borrar: ";
             getline(cin, apellido);
