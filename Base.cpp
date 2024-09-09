@@ -897,7 +897,6 @@ public:
             cout << "La lista no contiene nombres de personas." << endl;
             return;
         }
-
         NodoDePersonas* temp = head;
 
         while (temp != nullptr) {
@@ -989,7 +988,7 @@ public:
     void MostrarPersona() {
         NodoDePersonas* temp = head;
         while (temp != nullptr) {
-            cout << temp->nombre << " " << temp->apellido << " " << temp->edad << " " << temp->cedula << endl;
+            cout << temp->nombre << " " << temp->apellido << "\t\tCédula: " << temp->cedula << endl;
             temp = temp->next;
         }
     }
@@ -1351,7 +1350,38 @@ public:
             return;
         }
     }
+
+
+    void ImprimirPersonasYTareasActivas() {
+        if (head == nullptr) { 
+            cout << "No hay personas en la lista." << endl;
+            return;
+        }
+
+        NodoDePersonas *temp = head; 
+        int num = 1;  
+
+        cout << "Lista de personas y tareas activas:" << endl; 
+
+        while (temp != nullptr) {
+            cout << num << ". Nombre: " << temp->nombre << " " << temp->apellido << endl;
+
+            cout << "Su lista de tareas activas es: " << endl; 
+            int ced = temp->cedula;
+            MostrarTareasActivasDePersona(ced); 
+            cout << "\n"; 
+            
+            num++; 
+            temp = temp->next;  
+        }
+    }
+
+
 };
+
+
+
+
 
 ListaDePersonas Hola;
 
@@ -1362,7 +1392,7 @@ void cargarDatos(){
     Hola.InsertarPersona("Pedro","Gomez",21,2);
     Hola.InsertarPersona("Maria","Rodriguez",18,3);
     Hola.InsertarPersona("Jonny","Gonzales",19,4);
-    Hola.InsertarPersona("Federico","Murillo",23,5);
+    
     //Insertar tipo de tareas activas
     Hola.InsertarTareaActiva(1,1,"Estudair","Alta",3,3,2024,3);
     Hola.InsertarTareaActiva(1,1,"Estudiar", "Alta",3,3,2024,3);
@@ -1377,7 +1407,7 @@ void cargarDatos(){
     Hola.InsertarTipoDeTareaATareActivas(1,1,"Estudio","Trabajos del cole");
     Hola.InsertarTipoDeTareaATareActivas(1,2,"Casa", "Hace compras");
 
-    Hola.InsertarSubTareaEnTareaActiva(10, 11, "Casa", "Invitaciones enviadas", 80);
+    Hola.InsertarSubTareaEnTareaActiva(1, 1, "Casa", "Invitaciones enviadas", 80);
     Hola.InsertarSubTareaEnTareaActiva(10, 11, "Estudio", "Examen matematica", 50);   
     Hola.InsertarSubTareaEnTareaActiva(11, 13, "Estudio", "Proyecto de POO", 60);
     Hola.InsertarSubTareaEnTareaActiva(11, 13, "Casa", "Estiramientos completados", 40);   
@@ -1388,8 +1418,8 @@ void cargarDatos(){
 }
 
 /* Menú para realizar consultas*/
-void MenuConsulta(){
-    system("cls"); 
+void MenuConsulta(){ 
+    system("cls");
     cout<<"------------Menu de Consultas------------\n";
     cout<<"\nQue deseas consultar:\n";
     cout<<"1. Cual es la persona que tiene mas tareas activas\n";
@@ -1487,7 +1517,6 @@ void MenuConsulta(){
 
 /* Menú para imprimir*/
 void MenuImprimir(){
-    system("cls");
     cout<<"------------Menu de Impresion------------\n";
     cout<<"\nQue deseas imprimir:\n";
     cout<<"1. Imprimir las personas\n";
@@ -1612,7 +1641,6 @@ void MenuImprimir(){
 
 /*Menú principal */
 void Menu(){
-    system("cls");
     cout<<"------------Bienvenido al Gestor de Tareas------------\n";
     cout<<"\nQue deseas hacer:\n";
     cout<<"1. Insertar persona\n";
@@ -1635,9 +1663,9 @@ void Menu(){
             string nombre, apellido;
             int edad, cedula;
             cout<<"Ingrese el nombre de la persona: ";
-            cin>>nombre;
+            getline(cin, nombre);
             cout<<"Ingrese el apellido de la persona: ";
-            cin>>apellido;
+            getline(cin, apellido);
             cout<<"Ingrese la edad de la persona: ";
             cin>>edad;
             cout<<"Ingrese la cedula de la persona: ";
@@ -1650,9 +1678,9 @@ void Menu(){
         case 2:{
             string nombre, apellido;
             cout<<"Ingrese el nombre de la persona que desea borrar: ";
-            cin>>nombre;
+            getline(cin, nombre);
             cout<<"Ingrese el apellido de la persona que desea borrar: ";
-            cin>>apellido;
+            getline(cin, apellido);
             Hola.BorrarPersona(nombre,apellido);
             cout << "\nLa pesona ha sido eliminada con exito." <<endl; 
             Menu();
@@ -1665,9 +1693,9 @@ void Menu(){
             cout<<"Ingrese el id de la tarea: ";
             cin>>id;
             cout<<"Ingrese el nombre de la tarea: ";
-            cin>>nombreDeTipoDeTarea;
+            getline(cin, nombreDeTipoDeTarea);
             cout<<"Ingrese la descripcion de la tarea: ";
-            cin>>descripcion;
+            getline(cin, descripcion);
             Hola.InsertarTipoDeTareaATareActivas(1,id,nombreDeTipoDeTarea,descripcion);
             Menu();
             break;
