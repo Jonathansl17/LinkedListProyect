@@ -1706,9 +1706,9 @@ void Menu(){
             Hola.MostrarPersona();
             string nombre, apellido;
             cout<<"\nIngrese el nombre de la persona que desea borrar: ";
-            getline(cin, nombre);
+            cin>>nombre;
             cout<<"Ingrese el apellido de la persona que desea borrar: ";
-            getline(cin, apellido);
+            cin>>apellido;
             Hola.BorrarPersona(nombre,apellido);
             cout << "\nLa pesona ha sido eliminada con exito." <<endl; 
             Menu();
