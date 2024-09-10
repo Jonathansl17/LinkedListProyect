@@ -1722,7 +1722,7 @@ void Menu(){
             cout<<"Ingrese el nombre de la tarea: ";
             cin>>nombreDeTipoDeTarea;
             cout<<"Ingrese la descripcion de la tarea: ";
-            getline(cin, descripcion);
+            cin>> descripcion;
             Hola.InsertarTipoDeTareaATareActivas(1,id,nombreDeTipoDeTarea,descripcion);
             Menu();
             break;
@@ -1740,9 +1740,9 @@ void Menu(){
             cin>>idTipoTarea;
             cin.ignore(); 
             cout<<"Ingrese la descripcion de la tarea: ";
-            getline(cin, Descripcion);
+            cin>>Descripcion;
             cout<<"Ingrese el nivel de importancia de la tarea: ";
-            getline(cin, NivelDeImportancia);
+            cin>>NivelDeImportancia;
             cout<<"Ingrese el mes de la tarea: ";
             cin>>mes;
             cout<<"Ingrese el dia de la tarea: ";
@@ -1805,7 +1805,7 @@ void Menu(){
             cout<<"Ingrese el nombre de la subtarea: ";
             cin>>nombre;
             cout<<"Ingrese los comentarios de la subtarea: ";
-            getline(cin, comentarios);
+            cin>>comentarios;
             cout<<"Ingrese el porcentaje de avance de la subtarea: ";
             cin>>avanze;
             Hola.InsertarSubTareaEnTareaActiva(cedula,idTipoTarea,nombre,comentarios,avanze);
