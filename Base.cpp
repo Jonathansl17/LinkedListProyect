@@ -1,4 +1,3 @@
-
 #include <iostream> 
 #include <thread>
 #include <chrono>
@@ -1640,9 +1639,9 @@ void MenuImprimir(){
             cout << "\n";
             cin.ignore(); 
             cout << "Indique el nombre de la persona: "; 
-            getline(cin, nombre); 
+            cin >>nombre; 
             cout << "Indique el apellido de la persona: "; 
-            getline(cin, apellido); 
+            cin>>apellido; 
             Hola.TareasRealizadas(nombre, apellido);
             cout<<"\nVolviendo al Menu...";
             this_thread::sleep_for(chrono::seconds(5)); 
@@ -1690,9 +1689,9 @@ void Menu(){
             string nombre, apellido;
             int edad, cedula;
             cout<<"\nIngrese el nombre de la persona: ";
-            getline(cin, nombre);
+            cin>> nombre;
             cout<<"Ingrese el apellido de la persona: ";
-            getline(cin, apellido);
+            cin>> apellido;
             cout<<"Ingrese la edad de la persona: ";
             cin>>edad;
             cout<<"Ingrese la cedula de la persona: ";
@@ -1721,7 +1720,7 @@ void Menu(){
             cout<<"Ingrese el id de la tarea: ";
             cin>>id;
             cout<<"Ingrese el nombre de la tarea: ";
-            getline(cin, nombreDeTipoDeTarea);
+            cin>>nombreDeTipoDeTarea;
             cout<<"Ingrese la descripcion de la tarea: ";
             getline(cin, descripcion);
             Hola.InsertarTipoDeTareaATareActivas(1,id,nombreDeTipoDeTarea,descripcion);
@@ -1804,7 +1803,7 @@ void Menu(){
             cout<<"Ingrese el id de la tarea: ";
             cin>>idTipoTarea;
             cout<<"Ingrese el nombre de la subtarea: ";
-            getline(cin, nombre);
+            cin>>nombre;
             cout<<"Ingrese los comentarios de la subtarea: ";
             getline(cin, comentarios);
             cout<<"Ingrese el porcentaje de avance de la subtarea: ";
@@ -1825,7 +1824,7 @@ void Menu(){
             cout<<"Ingrese el id de la tarea: ";
             cin>>idTipoTarea;
             cout<<"Ingrese el nombre de la subtarea: ";
-            getline(cin, nombre);
+            cin>>nombre;
             Hola.BorrarSubTareaDeTareaActiva(cedula,idTipoTarea,nombre);
             Menu();
             break;
@@ -1843,7 +1842,7 @@ void Menu(){
             cin>>idTipoTarea;
             cin.ignore(); 
             cout<<"Ingrese el nombre de la subtarea: ";
-            getline(cin, nombreDeSubtarea);
+            cin >>nombreDeSubtarea;
             cout<<"Ingrese el nuevo porcentaje de avance de la subtarea: ";
             cin>>nuevoAvanze;
             Hola.ModificarSubTareaDePersona(cedula,idTipoTarea,nombreDeSubtarea,nuevoAvanze);
