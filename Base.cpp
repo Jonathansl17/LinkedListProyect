@@ -1415,27 +1415,33 @@ void cargarDatos(){
     Hola.InsertarPersona("Pedro","Gomez",21,2);
     Hola.InsertarPersona("Maria","Rodriguez",18,3);
     Hola.InsertarPersona("Jonny","Gonzales",19,4);
+    Hola.InsertarPersona("Adam","Evans",19,5);
     
     //Insertar tipo de tareas activas
-    Hola.InsertarTareaActiva(1,1,"Estudair","Alta",3,3,2024,3);
-    Hola.InsertarTareaActiva(1,1,"Estudiar", "Alta",3,3,2024,3);
-    Hola.InsertarTareaActiva(1,1,"Compras","Media",3,3,2024,3);
-    Hola.InsertarTareaActiva(1,1,"Compras","Baja",3,3,2024,3);
-    Hola.InsertarTareaActiva(1,2,"Limpiar","Media",2,2,2000,3);
-    Hola.InsertarTareaActiva(3,2,"Limpiar","Alta",2,2,2000,3);
-    Hola.InsertarTareaActiva(2,2,"Limpiar","Alta",3,3,2020,3);
-    Hola.InsertarTareaActiva(2,2,"Limpiar","Media",3,3,2020,3);
-    Hola.InsertarTareaActiva(2,2,"Limpiar","Media",3,3,2020,3);
-    Hola.InsertarTareaActiva(2,2,"Limpiar","Media",3,3,2020,3);
-    Hola.InsertarTipoDeTareaATareActivas(1,1,"Estudio","Trabajos del cole");
-    Hola.InsertarTipoDeTareaATareActivas(1,2,"Casa", "Hace compras");
+    Hola.InsertarTipoDeTareaATareActivas(1,1,"Estudio","Trabajos de la U");
+    Hola.InsertarTipoDeTareaATareActivas(2,2,"Casa", "Hacer compras o deberes del hogar");
+    Hola.InsertarTipoDeTareaATareActivas(2,3,"Trabajo", "Realizar las asignaciones del trabajo");
+    Hola.InsertarTipoDeTareaATareActivas(3,4,"Animales", "Cuidar a las mascotas y estar pendiente a sus necesidades");
+    Hola.InsertarTipoDeTareaATareActivas(3,5,"Pareja", "Hacer regalos, estar pendiente a compromisos");
 
-    Hola.InsertarSubTareaEnTareaActiva(1, 1, "Casa", "Invitaciones enviadas", 80);
-    Hola.InsertarSubTareaEnTareaActiva(10, 11, "Estudio", "Examen matematica", 50);   
-    Hola.InsertarSubTareaEnTareaActiva(11, 13, "Estudio", "Proyecto de POO", 60);
-    Hola.InsertarSubTareaEnTareaActiva(11, 13, "Casa", "Estiramientos completados", 40);   
-    Hola.InsertarSubTareaEnTareaActiva(12, 15, "Estudio", "Estanterías organizadas", 70);
-    Hola.InsertarSubTareaEnTareaActiva(12, 16, "Trabajo", "Correos respondidos", 90);
+    // Insertar tareas activas
+    Hola.InsertarTareaActiva(1,1,"Estudiar Mate", "Alta",3,3,2024,3);
+    Hola.InsertarTareaActiva(1,1,"Presentacion Comu", "Alta",3,3,2024,3);
+    Hola.InsertarTareaActiva(2,2,"Comprar Diario","Media",3,3,2024,3);
+    Hola.InsertarTareaActiva(2,2,"Lavar ropa","Baja",3,3,2024,3);
+    Hola.InsertarTareaActiva(2,3,"Reunion","Media",3,5,2024,13);
+    Hola.InsertarTareaActiva(3,4,"Peces","Alta",2,2,2025,8);
+    Hola.InsertarTareaActiva(3,4,"Gatos","Media",2,3,2025,10);
+    Hola.InsertarTareaActiva(3,5,"San Valentin","Alta",2,14,2025,14);
+    
+    //Insertar Subtareas
+    Hola.InsertarSubTareaEnTareaActiva(1, 1, "Mate", "Repasar funciones", 70);
+    Hola.InsertarSubTareaEnTareaActiva(1, 1, "Comu", "Realizar la presentacion de comunicacion oral", 90);
+    Hola.InsertarSubTareaEnTareaActiva(2, 2, "Comprar Frutas", "Comprar frutas para hacer batidos", 40);   
+    Hola.InsertarSubTareaEnTareaActiva(2, 3, "Reporte", "Realizar un reporte de la reunion", 10);
+    Hola.InsertarSubTareaEnTareaActiva(3, 4, "Peces", "Hecharle comida a los peces", 0);   
+    Hola.InsertarSubTareaEnTareaActiva(3, 4, "Gatos", "Preparar los agtos para ir al veterinario", 30);
+    Hola.InsertarSubTareaEnTareaActiva(3, 5, "Carta", "Hacerle una carta a la pareja", 90);
 
   
 }
